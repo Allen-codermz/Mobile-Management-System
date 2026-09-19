@@ -1,0 +1,122 @@
+:root {
+    --superficie: #fff;
+    --linha: #E3DFD6;
+    --tinta-esbatida: #8B8F99;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    font-family: sans-serif;
+}
+
+.main {
+    display: flex;
+    margin: 2em 10em;
+    border-radius: 12px;
+    height: 90vh;
+    box-shadow: 4px 5px 28px #2B3A63;
+    overflow: hidden;
+}
+
+.esquerda {
+    height: 100%;
+    max-width: 40%;
+    min-width: 40%;
+    display: flex;
+}
+.esquerda img{
+    margin-left: 2rem;
+    width: 100%;
+}
+
+.direita {
+    background-color: var(--superficie);
+    height: 100%;
+    padding: 1.5em 3.5em;
+}
+
+form {
+    margin-top: 1rem;
+    margin-left: 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pw {
+    display: flex;
+    flex-direction: column;
+}
+
+input, select{
+    padding: .8em 1em;
+    background-color: #f6f8f7;
+    border: 1px solid var(--linha);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+select,input:focus {
+    outline: none;
+    box-shadow: 0 0 2px var(--tinta-esbatida);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1em;
+    gap: .3em;
+}
+
+.direita h2 {
+    font-family: monospace;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 3rem;
+}
+
+.direita p {
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 1em;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+label::after {
+    content: " *";
+    color:dimgrey;
+}
+
+.center { 
+    margin: auto;
+}
+
+.btn1 {
+    font-weight: 700;
+    padding: 9px 130px;
+    background-color: dimgray;
+    color: var(--superficie);
+    border: none;
+    border-radius: 25px;
+    transition: 0.4s;
+}
+
+.btn1:hover {
+    background-color: rgb(121, 121, 121);
+}

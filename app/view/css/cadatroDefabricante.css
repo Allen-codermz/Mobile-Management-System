@@ -1,0 +1,130 @@
+* {
+    border: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* FUNDOS */
+    --cor-fundo: #F5F1EA;
+    --cor-superficie: #FBFAF7;
+
+    /* CINZAS */
+    --cor-cinza: #E4E1DB;
+    --cor-cinza-medio: #C9C5BE;
+
+    /* CASTANHO */
+    --cor-castanho: #B7A18C;
+    --cor-castanho-escuro: #69594D;
+
+    /* TEXTO */
+    --cor-texto: #403A35;
+    --cor-texto-suave: #746C65;
+
+    /* BORDAS */
+    --cor-borda: #D8D3CC;
+
+    /* ESTADOS */
+    --cor-sucesso: #A8B9A0;
+    --cor-erro: #C99A91;
+}
+
+body {
+    background-color: var(--cor-superficie);
+}
+
+.area-formulario {
+    width: 100%;
+    height: 240px;
+    /* display: flex; */
+    padding: 50px;
+    margin-bottom: 20px;
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+}
+
+.area-formulario select {
+    /* margin-bottom: 1rem; */
+    padding: 0.35rem;
+    background-color: var(--cor-cinza-medio);
+    border: 1px solid var(--cor-texto);
+    border-radius: 12px;
+
+}
+
+main {
+    padding: 20px;
+}
+
+.in input {
+    margin-top: 1rem;
+    padding: 0.35rem;
+    background-color: var(--cor-cinza-medio);
+    border: 1px solid var(--cor-texto);
+    border-radius: 12px;
+}
+
+.form1{
+    margin-bottom: 1rem;
+}
+
+.botoes {
+    display: flex;
+    justify-content: right;
+    gap: 2rem;
+}
+
+.botoes input {
+    width: 80px;
+    padding: 0.35rem;
+    border: 1px solid var(--cor-texto);
+    border-radius: 12px;
+    background-color: var(--cor-cinza-medio);
+
+
+}
+
+.cards {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+
+}
+
+.card {
+    width: 250px;
+    padding: 10px;
+    background-color: var(--cor-cinza);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+}
+
+
+
+.accoes {
+    display: flex;
+    justify-content: right;
+    gap: 2rem;
+}
+
+.accoes input {
+    border: 1px solid var(--cor-texto);
+    border-radius: 12px;
+    padding: 0.25rem;
+    background-color: var(--cor-cinza-medio);
+
+}
+
+.mensagem-sucesso {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px;
+}
