@@ -3,8 +3,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include_once("../../model/fabricante.php");
-include_once("../../Project/app/controller/ControllerFabricante.php");
+include_once __DIR__ . '/../../model/fabricante.php';
+include_once __DIR__ . '/../../config/conexao.php';
+
+
 $conexao = mysqli_connect("127.0.0.1", "root", "Ilovejava@123", "celular");
 $fabricantes = listar($conexao);
 $paises = array();
@@ -97,8 +99,8 @@ if (isset($_POST['salvar'])) {
         $result = mysqli_query($conexao, $sql);
         if ($result) {
             echo "
-            div class='mensagem-sucesso'>
-                Fabricante adicionado com sucesso!
+            <div> class='mensagem-sucesso'
+                
             </div>";
         } else {
             echo "fabricante não registrado";
@@ -157,87 +159,145 @@ if (isset($_GET['codigoContinente'])) {
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Page Title</title>
     <link rel='stylesheet' href='../css/cadatroDefabricante.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
-    <header>
-        <nav>
+    <div class="layout">
+        <aside class="sidebar">
 
-        </nav>
-    </header>
+            <h3>Gestão de Celulares</h3>
 
-    <main>
-        <div class="area-formulario">
+            <nav class="menu">
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-house"></i>
+                    <smal>Dashboard</smal>
+                </a>
 
-            <form method="get" class="form1">
-                <label for="codigoContinente">Continente:</label>
-                <select name="codigoContinente" id="codigoContinente" onchange="this.form.submit()">
-                    <option value="">Selecione o Continente</option>
-                    <?php foreach ($continetes as $continente) { ?>
-                        <option value="<?= $continente['codigoContinente']; ?>"
-                            <?= isset($_GET['codigoContinente']) && $_GET['codigoContinente'] == $continente['codigoContinente'] ? 'selected' : ''; ?>>
-                            <?= $continente['continente']; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </form>
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                    <smal>Celulares</smal>
+                </a>
 
-            <form action="" method="post" class="form2">
-                <label for="paisDeOrigem">Pais De Origem:</label>
-                <select name="codigoPais" id="codigoPais" required>
-                    <option value="">Selecione o país</option>
-                    <?php foreach ($paises as $pais) { ?>
-                        <option value="<?= $pais['codigoPais']; ?>"
-                            <?= isset($fabricante) && $fabricante->getCodigoPais() == $pais['codigoPais'] ? 'selected' : ''; ?>>
-                            <?= $pais['pais']; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-                <div class="in">
-                    <input type="hidden" name="id" value="<?= isset($fabricante) ? $fabricante->getCodigoFabricante() : ''; ?>">
-                    <label for="fabricante">Fabricante:</label>
-                    <input type="text" name="nome" value="<?= isset($fabricante) ? $fabricante->getNome() : ''; ?>" required>
+                <a href="#" class="menu-item active">
+                    <i class="fa-solid fa-building"></i>
+                    <smal>Fabricantes</smal>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-tag"></i>
+                    <smal>Marcas</smal>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-box"></i>
+                    <smal>Modelos</smal>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-palette"></i>
+                    <smal>Cores</smal>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="page-header">
+                <div>
+                    <h1>Fabricantes</h1>
                 </div>
-                <div class="botoes">
-                    <?php if (isset($fabricante)) { ?>
-                        <input type="submit" name="actualizar" value="actualizar">
-                    <?php } else { ?>
-                        <input type="submit" name="salvar" value="salvar">
-                    <?php } ?>
-                    <input type="reset" name="limpar" value="cancelar">
-                </div>
-            </form>
-        </div>
+            </header>
 
-        <div class="cards">
-
-            <?php
-            if (count($fabricantes) > 0) {
-                foreach ($fabricantes as $fabricante) {
-                    echo "
-                    <div class= card >
-                    <h2>{$fabricante->getCodigoFabricante()}</h2>
-                    <h3>{$fabricante->getNome()}</h3>
-                    <p>{$fabricante->getPais()}<p/>
-                    <div class = accoes>
-                    <form method='post'>
-                    <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}'>
-                    <input type='submit' name='apagar' value='apagar' class='apagar'>
-                    </form>
-                    <form method='get'>
-                    <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}'>
-                    <input type=submit name='editar' value='editar'>
-                    </form>
+            <section class="formulario-card">
+                <form method="get" class="formulario">
+                    <div class="campo">
+                        <label for="codigoContinente"> Continente</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-earth-africa"></i>
+                            <select name="codigoContinente" id="codigoContinente" onchange="this.form.submit()">
+                                <option value=""> Selecione o continente</option>
+                                <?php foreach ($continetes as $continente) { ?>
+                                    <option value="<?= $continente['codigoContinente']; ?>" <?= isset($_GET['codigoContinente']) && $_GET['codigoContinente'] == $continente['codigoContinente'] ? 'selected' : ''; ?>> <?= $continente['continente']; ?> </option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
-                    </div>";
-                }
-            }
-            ?>
+                </form>
 
-        </div>
+                <form action="" method="post" class="formulario">
+                    <input type="hidden" name="id" value="<?= isset($fabricante) ? $fabricante->getCodigoFabricante() : ''; ?>">
+                    <div class="campos-linha">
+                        <div class="campo">
+                            <label for="codigoPais">País de origem</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <select name="codigoPais" id="codigoPais" required>
+                                    <option value="">Selecione o país</option>
+                                    <?php foreach ($paises as $pais) { ?>
+                                        <option
+                                            value="<?= $pais['codigoPais']; ?>"
+                                            <?= isset($fabricante) &&
+                                                $fabricante->getCodigoPais() == $pais['codigoPais']
+                                                ? 'selected'
+                                                : ''; ?>>
+                                            <?= $pais['pais']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label for="fabricante">Fabricante</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-building"></i>
+                                <input type="text" id="fabricante" name="nome" placeholder="Ex: Samsung" value="<?= isset($fabricante) ? $fabricante->getNome() : ''; ?>" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="botoes">
+                        <button type="reset" class="btn-cancelar"> <i class="fa-solid fa-eraser"></i> Limpar </button>
+                        <?php if (isset($fabricante)) { ?>
+                            <button type="submit" name="actualizar" class="btn-guardar"> <i class="fa-solid fa-rotate"></i> Actualizar </button>
+                        <?php } else { ?>
+                            <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar fabricante </button>
+                        <?php } ?>
+                    </div>
+                </form>
+            </section>
 
 
-    </main>
+            <section>
+                <div class="cards">
+                    <?php
+                    if (count($fabricantes) > 0) {
+                        foreach ($fabricantes as $fabricante) {
+                            echo "
+                        <div class='card'>
+                        <div class='card-top'>
+                        <span class='codigo'>{$fabricante->getCodigoFabricante()}</span>
+                        </div>
+                        <div class='card-info'>
+                        <h3>{$fabricante->getNome()}</h3>
+                        <p class='pais'> <i class='fa-solid fa-location-dot'></i> {$fabricante->getPais()} </p>
+                        </div>
+                        <div class='acoes'>
+                        <form method='get'>
+                        <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}'>
+                        <button type='submit' name='editar' class='btn-editar'> <i class='fa-solid fa-pen'></i> Editar </button>
+                        </form>
+                        <form method='post'>
+                        <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}'>
+                        <button type='submit' name='apagar' class='btn-apagar'> <i class='fa-solid fa-trash'></i> Apagar </button>
+                        </form>
+                        </div>
+                        </div>";
+                        }
+                    }
+                    ?>
+                </div>
+            </section>
+        </main>
 </body>
 
 </html>

@@ -12,6 +12,32 @@ class ControllerFabricante
     }
 
 
+    public function listarContinentes()
+    {
+        $continentes = array();
+        $sql = "SELECT codigoContinente, continente FROM Continente";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $continentes[] = $rs;
+            }
+        }
+        return $continentes;
+    }
+
+    function listarPaises($conexao, $codigoContinente)
+    {
+        $paises = array();
+        $sql = "select codigoPais, pais from Pais where codigoContinente = {$codigoContinente}";
+        $result = mysqli_query($conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $paises[] = $rs;
+            }
+        }
+        return $paises;
+    }
+
 
     //READ
     function listar()
@@ -78,4 +104,8 @@ class ControllerFabricante
         $result = mysqli_query($conexao, $sql);
         // header('location:index.php');
     }
+
+    
 }
+
+
