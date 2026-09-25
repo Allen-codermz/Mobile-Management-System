@@ -6,13 +6,20 @@ class Fabricante
     private $nome;
     private $codigoPais;
     private $pais;
+    private $codigoContinente;
 
-    public function __construct($codigoFabricante, $nome, $codigoPais, $pais)
-    {
+    public function __construct(
+        $codigoFabricante,
+        $nome,
+        $codigoPais,
+        $pais,
+        $codigoContinente = null
+    ) {
         $this->codigoFabricante = $codigoFabricante;
         $this->nome = $nome;
         $this->codigoPais = $codigoPais;
         $this->pais = $pais;
+        $this->codigoContinente = $codigoContinente;
     }
 
     public function getCodigoFabricante()
@@ -20,19 +27,9 @@ class Fabricante
         return $this->codigoFabricante;
     }
 
-    public function setCodigoFabricante($codigoFabricante)
-    {
-        $this->codigoFabricante = $codigoFabricante;
-    }
-
     public function getNome()
     {
         return $this->nome;
-    }
-
-    public function setNome($nome)
-    {
-        $this->nome = $nome;
     }
 
     public function getCodigoPais()
@@ -40,18 +37,13 @@ class Fabricante
         return $this->codigoPais;
     }
 
-    public function setCodigoPais($codigoPais)
-    {
-        $this->codigoPais = $codigoPais;
-    }
-
     public function getPais()
     {
         return $this->pais;
     }
 
-    public function setPais($pais)
+    public function getCodigoContinente()
     {
-        $this->pais = $pais;
+        return $this->codigoContinente;
     }
 }

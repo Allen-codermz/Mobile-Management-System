@@ -7,10 +7,10 @@ class modelo{
 
     public function __construct($codigoModelo,$nome,$codigoMarca,$marca)
     {
-        $this->codigoMarca=$codigoMarca;
+        $this->codigoModelo=$codigoModelo;
         $this->nome=$nome;
-        $this->codigoMarca;
-        $this->marca;
+        $this->codigoMarca=$codigoMarca;
+        $this->marca=$marca;
 
     }
     public function getCodigoModelo()

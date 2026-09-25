@@ -4,91 +4,14 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include_once __DIR__ . '/../../model/fabricante.php';
+include_once __DIR__ . '/../../controller/ControllerFabricante.php';
 include_once __DIR__ . '/../../config/conexao.php';
 
 
-$conexao = mysqli_connect("127.0.0.1", "root", "Ilovejava@123", "celular");
-$fabricantes = listar($conexao);
+$fabricanteController = new ControllerFabricante($conexao);
+$fabricantes = $fabricanteController->listar();
 $paises = array();
-$continetes = listarContinentes($conexao);
-
-//READ 
-function listar($conexao)
-{
-    $fabricantes = array();
-    $sql = "select  f.codigoFabricante, f.fabricante, f.codigoPais, p.pais
-        from fabricante f
-        inner join Pais p
-        on f.codigoPais = p.codigoPais";
-    $result = mysqli_query($conexao, $sql);
-    if ($result) {
-        while ($rs = mysqli_fetch_assoc($result)) {
-            $id = $rs["codigoFabricante"];
-            $nome = $rs["fabricante"];
-            $codigoPais = $rs["codigoPais"];
-            $pais = $rs["pais"];
-            $fabricante = new fabricante($id, $nome, $codigoPais, $pais);
-            array_push($fabricantes, $fabricante);
-        }
-    }
-    return $fabricantes;
-}
-
-function listarContinentes($conexao)
-{
-    $continetes = array();
-    $sql = "select codigoContinente, continente from Continente";
-    $result = mysqli_query($conexao, $sql);
-    if ($result) {
-        while ($rs = mysqli_fetch_assoc($result)) {
-            $continetes[] = $rs;
-        }
-    }
-    return $continetes;
-}
-
-function listarPaises($conexao, $codigoContinente)
-{
-    $paises = array();
-    $sql = "select codigoPais, pais from Pais where codigoContinente = {$codigoContinente}";
-    $result = mysqli_query($conexao, $sql);
-    if ($result) {
-        while ($rs = mysqli_fetch_assoc($result)) {
-            $paises[] = $rs;
-        }
-    }
-    return $paises;
-}
-
-//REMOVE
-function remover($id)
-{
-    global $conexao;
-    $sql = "delete from fabricante where codigoFabricante = {$id}";
-    $result = mysqli_query($conexao, $sql);
-    return $result;
-}
-//UPDATE
-function editar($id)
-{
-    global $conexao;
-    $sql = "select f.codigoFabricante, f.fabricante, f.codigoPais, p.pais, p.codigoContinente
-            from fabricante f
-            inner join Pais p
-            on f.codigoPais = p.codigoPais
-            where f.codigoFabricante = {$id}";
-    $result = mysqli_query($conexao, $sql);
-    if ($result) {
-        $rs = mysqli_fetch_assoc($result);
-        $id = $rs["codigoFabricante"];
-        $nome = $rs["fabricante"];
-        $codigoPais = $rs["codigoPais"];
-        $pais = $rs["pais"];
-
-
-        return new fabricante($id, $nome, $codigoPais, $pais);
-    }
-}
+$continetes = $fabricanteController->listarContinentes();
 
 //CREATE
 if (isset($_POST['salvar'])) {
@@ -98,14 +21,12 @@ if (isset($_POST['salvar'])) {
         $sql = "insert into fabricante values(null,'{$nome}','{$codigoPais}')";
         $result = mysqli_query($conexao, $sql);
         if ($result) {
-            echo "
-            <div> class='mensagem-sucesso'
-                
-            </div>";
+            header("Location: cadastroDeFabricante.php");
+            exit;
         } else {
             echo "fabricante não registrado";
         }
-        $fabricantes = listar($conexao);
+        $fabricantes = $fabricanteController->listar();
     }
 }
 
@@ -118,22 +39,21 @@ if (isset($_POST['actualizar'])) {
         $sql = "update fabricante set fabricante='{$nome}', codigoPais='{$codigoPais}' where codigoFabricante={$id}";
         $result = mysqli_query($conexao, $sql);
         if ($result) {
-            echo "Fabricante actulizado!";
-            unset($_GET['editar']);
-            unset($_GET['id']);
+            header("Location: cadastroDeFabricante.php");
+            exit;
         } else {
             echo "Fabricante não actualizado";
         }
-        $fabricantes = listar($conexao);
+        $fabricantes = $fabricanteController->listar();
     }
 }
 
 //DELETE FOR REAL
 if (isset($_POST['apagar'])) {
     $id = $_POST['id'];
-    if (remover($id)) {
-        echo "Fabricante removido";
-        $fabricantes = listar($conexao);
+    if ($fabricanteController->remover($id)) {
+        header("Location: cadastroDeFabricante.php");
+        exit;
     } else {
         echo "Fabricante não foi removido";
     }
@@ -141,13 +61,22 @@ if (isset($_POST['apagar'])) {
 
 //
 if (isset($_GET['id'])) {
+
     $id = $_GET['id'];
-    $fabricante = editar($id);
+
+    $fabricante = $fabricanteController->encontraId($id);
+
+    if ($fabricante) {
+        $paises = $fabricanteController->listarPaises(
+            $conexao,
+            $fabricante->getCodigoContinente()
+        );
+    }
 }
 
 if (isset($_GET['codigoContinente'])) {
     $codigoContinente = $_GET['codigoContinente'];
-    $paises = listarPaises($conexao, $codigoContinente);
+    $paises = $fabricanteController->listarPaises($conexao, $codigoContinente);
 }
 ?>
 
@@ -171,32 +100,42 @@ if (isset($_GET['codigoContinente'])) {
             <nav class="menu">
                 <a href="#" class="menu-item">
                     <i class="fa-solid fa-house"></i>
-                    <smal>Dashboard</smal>
+                    <p>Dashboard</p>
                 </a>
 
                 <a href="#" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
-                    <smal>Celulares</smal>
+                    <p>Celulares</p>
                 </a>
 
                 <a href="#" class="menu-item active">
                     <i class="fa-solid fa-building"></i>
-                    <smal>Fabricantes</smal>
+                    <p>Fabricantes</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/CadastroDeMarca.php" class="menu-item">
                     <i class="fa-solid fa-tag"></i>
-                    <smal>Marcas</smal>
+                    <p>Marcas</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDeModelo.php" class="menu-item">
                     <i class="fa-solid fa-box"></i>
-                    <smal>Modelos</smal>
+                    <p>Modelos</p>
                 </a>
 
                 <a href="#" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
-                    <smal>Cores</smal>
+                    <p>Cores</p>
+                </a>
+
+                <!-- <a href="#" class="menu-item">
+                    <i class="fa-solid fa-palette"></i>
+                    <smal></smal>
+                </a> -->
+
+                <a href="#" class="menu-item-logout">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                    <p>Log Out</p>
                 </a>
             </nav>
         </aside>
@@ -250,7 +189,7 @@ if (isset($_GET['codigoContinente'])) {
                             <label for="fabricante">Fabricante</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-building"></i>
-                                <input type="text" id="fabricante" name="nome" placeholder="Ex: Samsung" value="<?= isset($fabricante) ? $fabricante->getNome() : ''; ?>" required>
+                                <input type="text" id="fabricante" name="nome" placeholder="Ex: Samsung Eletronics" value="<?= isset($fabricante) ? $fabricante->getNome() : ''; ?>" required>
                             </div>
                         </div>
                     </div>

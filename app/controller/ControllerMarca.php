@@ -1,6 +1,6 @@
 <?php
-include_once("../../model/marca.php");
-include_once("../config/conexao.php");
+include_once __DIR__ . '/../model/marca.php';
+include_once __DIR__ . '/../config/conexao.php';
 
 class ControllerMarca
 {
@@ -12,15 +12,27 @@ class ControllerMarca
         $this->conexao = $conexao;
     }
 
+    function listarFabricantes()
+    {
+        $fabricantes = array();
+        $sql = "SELECT codigoFabricante, fabricante FROM fabricante";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $fabricantes[] = $rs;
+            }
+        }
+        return $fabricantes;
+    }
+
     function listar()
     {
-        global $conexao;
         $marcas = array();
         $sql = "select m.codigoMarca, m.marca, m.codigoFabricante, f.fabricante
         from marca m
         inner join fabricante f
         on m.codigofabricante = f.codigoFabricante";
-        $result = mysqli_query($conexao, $sql);
+        $result = mysqli_query($this->conexao, $sql);
         if ($result) {
             while ($rs = mysqli_fetch_assoc($result)) {
                 $id = $rs["codigoMarca"];
@@ -32,44 +44,65 @@ class ControllerMarca
                 array_push($marcas, $marca);
             }
         }
+        return $marcas;
     }
+
+
     function criar($marca)
     {
-        global $conexao;
-        $sql = "select * from marca where marca = {$marca->getNome()} or codigoFabricante='{$marca->getCodigofabricante()}' or fabricante='{$marca->getFabricante()}'";
-        $result = mysqli_query($conexao, $sql);
+        $sql = "select * from marca where marca = '{$marca->getNome()}' and codigoFabricante = '{$marca->getCodigofabricante()}'";
+        $result = mysqli_query($this->conexao, $sql);
         if (mysqli_num_rows($result) > 0) {
             echo "";
         } else {
-            $sql = "insert into modelo values(null,'{$marca->getNome()}','{$marca->getCodigofabricante()}','{$marca->getFabricante()}')";
-            $result = mysqli_query($conexao, $sql);
+            $sql = " insert into marca values ( null , '{$marca->getNome()}' , '{$marca->getCodigofabricante()}')";
+            $result = mysqli_query($this->conexao, $sql);
+
             if ($result) {
-                // header('location:index.php');
+                header("Location: CadastroDeMarca.php");
+                exit;
             } else {
                 echo "";
             }
         }
+        return $result;
     }
 
-    function editar($marca)
+    function actualizar($marca)
     {
-        global $conexao;
         $sql = "Update marca set marca = '{$marca->getNome()}',codigoMarca = {$marca->getCodigofabricante()}, marca = '{$marca->getFabricante()}')
-            where codigoMarca ={$marca->getCodidoMarca()}";
+            where codigoMarca ={$marca->getCodigoMarca()}";
 
-        $result = mysqli_query($conexao, $sql);
+        $result = mysqli_query($this->conexao, $sql);
         if ($result) {
-            //    header('location:index.php');
+            header("Location: CadastroDeMarca.php");
         } else {
             echo "";
         }
+        return $result;
     }
 
     function remover($id)
     {
-        global $conexao;
         $sql = "delete from marca where codigoMarca = {$id}";
-        $result = mysqli_query($conexao, $sql);
-        // header('location:index.php');
+        $result = mysqli_query($this->conexao, $sql);
+
+        return $result;
+    }
+
+
+    function encontrarId($id)
+    {
+        $sql = "select  m.codigoMarca, m.marca, m.codigoFabricante, f.fabricante
+            from marca m
+            inner join fabricante f
+        on m.codigofabricante = f.codigoFabricante
+        where m.codigoMarca = $id";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result && mysqli_num_rows($result) > 0) {
+            $rs = mysqli_fetch_assoc($result);
+            return new marca($rs['codigoMarca'], $rs['marca'], $rs['codigoFabricante'], null);
+        }
+        return null;
     }
 }

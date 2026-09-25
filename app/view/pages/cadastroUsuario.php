@@ -11,22 +11,26 @@
 <body>
     <div class="main">
         <div class="esquerda">
-            <img src="../images/sign-up-animate(1).svg" alt="">
+            <img src="../images/sign-up-animate.svg" alt="">
         </div>
         <div class="direita">
             <form class="form" id="cadastro">
                 <h2><b>Criar conta</b></h2>
                 <label for="nome">Nome completo</label>
-                <input type="text" id="nome" placeholder="Anacleto">
+                <input type="text" id="nome" placeholder="Anacleto Das Dorres">
 
                 <label for="nome">Username</label>
                 <input type="text" id="nome" placeholder="AnacletoAgenteSecreto">
 
-                <!-- <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Anacleto@gmail.com"> -->
+                <label for="nome">Contacto</label>
+                <input type="text" id="nome" placeholder="+258 84 1234 567">
+
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Anacleto@gmail.com">
 
                 <label for="email">Perfil</label>
                 <select>
+                    <option value="">Selecione o perfil</option>
                     <option value="option1">Operador</option>
                     <option value="option2">Super-Operador</option>
                     <option value="option3">Administrador</option>

@@ -16,8 +16,8 @@
                 <label for="nome">Username</label>
                 <input type="text" id="nome" placeholder="Anacleto">
 
-                <!-- <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Anacleto@gmail.com"> -->
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Anacleto@gmail.com">
 
                 <div class="pw">
                     <label for="pw">Palavra-passe</label>

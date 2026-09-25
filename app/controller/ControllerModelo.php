@@ -1,6 +1,7 @@
 <?php
-include_once("/../model/modelo.php");
-include_once("../config/conexao.php");
+include_once __DIR__ . '/../model/modelo.php';
+include_once __DIR__ . '/../config/conexao.php';
+
 
 class ControllerModelo
 {
@@ -11,16 +12,29 @@ class ControllerModelo
         $this->conexao = $conexao;
     }
 
+    function listarMarcas()
+    {
+        $marcas = array();
+        $sql = "SELECT codigoMarca, marca FROM marca";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $marcas[] = $rs;
+            }
+        }
+        return $marcas;
+    }
+
+
     //READ
     function listar()
     {
-        global $conexao;
         $modelos = array();
         $sql = "select mo.codigoModelo, mo.modelo, mo.codigoMarca, m.marca
         from modelo mo
         inner join marca m
         on mo.codigoMarca = m.codigoMarca";
-        $result = mysqli_query($conexao, $sql);
+        $result = mysqli_query($this->conexao, $sql);
         if ($result) {
             while ($rs = mysqli_fetch_assoc($result)) {
                 $id = $rs["codigoModelo"];
@@ -38,45 +52,58 @@ class ControllerModelo
     //CREATE
     function criar($modelo)
     {
-        global $conexao;
-        $sql = "select * from modelo where modelo={$modelo->getNome()} or codigoMarca='{$modelo->getcodigoMarca()}' or marca='{$modelo->getMarca()}'";
-        $result = mysqli_query($conexao, $sql);
+        $sql = "select * from modelo where modelo= '{$modelo->getNome()}' and codigoMarca='{$modelo->getcodigoMarca()}'";
+        $result = mysqli_query($this->conexao, $sql);
         if (mysqli_num_rows($result) > 0) {
             echo "";
         } else {
-            $sql = "insert into modelo values(null,'{$modelo->getNome()}','{$modelo->getcodigoMarca()}','{$modelo->getMarca()}')";
-            $result = mysqli_query($conexao, $sql);
+            $sql = " insert into modelo values (null,'{$modelo->getNome()}','{$modelo->getcodigoMarca()}')";
+            $result = mysqli_query($this->conexao, $sql);
             if ($result) {
                 // header('location:index.php');
             } else {
                 echo "";
             }
         }
+        return $result;
     }
 
     //UPDATE
     function editar($modelo)
     {
-        global $conexao;
-        $sql = "update modelo set modelo = '{$modelo->getNome()}',codigoMarca = {$modelo->getcodigoMarca()}, marca = '{$modelo->getMarca()}')
-            where codigoModelo ={$modelo->getCodidoModelo()}";
+        $sql = "update modelo set modelo = '{$modelo->getNome()}',codigoMarca = '{$modelo->getcodigoMarca()}'
+            where codigoModelo = {$modelo->getCodigoModelo()}";
 
-        $result = mysqli_query($conexao, $sql);
+        $result = mysqli_query($this->conexao, $sql);
         if ($result) {
             //    header('location:index.php');
         } else {
             echo "";
         }
+        return $result;
     }
 
     //DELETE
     function remover($id)
     {
-        global $conexao;
         $sql = "delete from modelo where codigoModelo = {$id}";
-        $result = mysqli_query($conexao, $sql);
+        $result = mysqli_query($this->conexao, $sql);
         // header('location:index.php');
+        return $result;
     }
 
-
+    function encontrarId($id)
+    {
+        $sql = "select  mo.codigoModelo, mo.modelo, mo.codigoMarca, m.marca
+            from modelo mo
+            inner join marca m
+        on mo.codigoMarca = m.codigoMarca
+        where mo.codigoModelo = $id";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result && mysqli_num_rows($result) > 0) {
+            $rs = mysqli_fetch_assoc($result);
+            return new modelo($rs['codigoModelo'], $rs['modelo'], $rs['codigoMarca'], null);
+        }
+        return null;
+    }
 }

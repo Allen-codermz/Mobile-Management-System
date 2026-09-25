@@ -1,7 +1,13 @@
 :root {
-    --superficie: #fff;
-    --linha: #E3DFD6;
-    --tinta-esbatida: #8B8F99;
+    --fundo: #F8F5F0;
+    --branco: #FFFDFC;
+    --castanho-escuro: #4A3B32;
+    --castanho: #A67C62;
+    --castanho-claro: #C9A98F;
+    --bege: #F0E6DD;
+    --borda: #E8DED4;
+    --texto: #332A25;
+    --texto-secundario: #88796E;
 }
 
 * {
@@ -15,6 +21,8 @@ body {
     justify-content: center;
     align-content: center;
     font-family: sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
 }
 
 .main {
@@ -22,23 +30,25 @@ body {
     margin: 2em 10em;
     border-radius: 12px;
     height: 90vh;
-    box-shadow: 4px 5px 28px #2B3A63;
+    box-shadow: 4px 5px 28px var(--castanho-escuro);
     overflow: hidden;
+    background-color: var(--bege);
 }
 
 .esquerda {
+    background-color: var(--fundo);
     height: 100%;
     max-width: 40%;
     min-width: 40%;
     display: flex;
 }
-.esquerda img{
+
+.esquerda img {
     margin-left: 2rem;
     width: 100%;
 }
 
 .direita {
-    background-color: var(--superficie);
     height: 100%;
     padding: 1.5em 3.5em;
 }
@@ -51,23 +61,38 @@ form {
     gap: 5px;
 }
 
+h2 {
+    font-size:xx-large;
+    font-weight: 100;
+    color: var(--texto);
+}
+
 .pw {
     display: flex;
     flex-direction: column;
 }
 
-input, select{
+input,
+select {
     padding: .8em 1em;
-    background-color: #f6f8f7;
-    border: 1px solid var(--linha);
-    border-radius: 3px;
+    background-color: #fffefc;
+    color: var(--texto);
+    border: 1px solid var(--borda);
+    border-radius: 11px;
     cursor: pointer;
     transition: 0.4s;
 }
 
-select,input:focus {
+select:focus,
+input:focus {
+    border-color: var(--castanho);
+    background-color: #FFFFFF;
     outline: none;
-    box-shadow: 0 0 2px var(--tinta-esbatida);
+    box-shadow: 0 0 2px rgba(166, 124, 98, 0.12);
+}
+
+select {
+    appearance: none;
 }
 
 .actions {
@@ -100,23 +125,23 @@ label {
 
 label::after {
     content: " *";
-    color:dimgrey;
+    color: var(--castanho);
 }
 
-.center { 
+.center {
     margin: auto;
 }
 
 .btn1 {
     font-weight: 700;
     padding: 9px 130px;
-    background-color: dimgray;
-    color: var(--superficie);
+    background-color: var(--castanho-escuro);
+    color: var(--fundo);
     border: none;
     border-radius: 25px;
     transition: 0.4s;
 }
 
 .btn1:hover {
-    background-color: rgb(121, 121, 121);
+    background-color: var(--castanho);
 }
