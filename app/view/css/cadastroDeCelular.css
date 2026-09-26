@@ -317,7 +317,7 @@ card-info {
     text-transform: capitalize;
 }
 
-.card-info .marca {
+.card-info .celular {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -325,7 +325,7 @@ card-info {
     font-size: 13px;
 }
 
-.card-info .marca i {
+.card-info .celular i {
     color: var(--castanho);
     font-size: 13px;
 }

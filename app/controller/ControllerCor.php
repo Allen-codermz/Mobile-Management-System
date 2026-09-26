@@ -1,6 +1,6 @@
 <?php
-include_once("../../model/cor.php");
-include_once("../config/conexao.php");
+include_once __DIR__ . '/../model/modelo.php';
+include_once __DIR__ . '/../config/conexao.php';
 
 class ControllerCor
 {
@@ -15,10 +15,9 @@ class ControllerCor
 
     function listar()
     {
-        global $conexao;
         $cores = array();
         $sql = "select * from cor";
-        $result = mysqli_query($conexao, $sql);
+        $result = mysqli_query($this->conexao, $sql);
 
         if ($result) {
             while ($rs = mysqli_fetch_assoc($result)) {
@@ -30,8 +29,9 @@ class ControllerCor
                 array_push($cores, $cor);
             }
         }
+        return $cores;
     }
-    function ciar($cor)
+    function criar($cor)
     {
         global $conexao;
         $sql = "select * from cor where Cor = {$cor->getCorHex()} or descricao='{$cor->getDescricao()}'";
@@ -47,6 +47,7 @@ class ControllerCor
                 echo "";
             }
         }
+        return $result;
     }
 
     function editar($cor)
@@ -61,6 +62,7 @@ class ControllerCor
         } else {
             echo "";
         }
+        return $result;
     }
 
     function remover($id)
@@ -69,5 +71,20 @@ class ControllerCor
         $sql = "delete from Cor where codigoCor = {$id}";
         $result = mysqli_query($conexao, $sql);
         // header('location:index.php');
+
+        return $result;
+    }
+
+    public function encontrarId($id)
+    {
+        $sql = "select codigoCor, Cor, descricao
+                from cor
+                where codigoCor = {$id}";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result && mysqli_num_rows($result) > 0) {
+            $rs = mysqli_fetch_assoc($result);
+            return new Cor($rs["codigoCor"], $rs["Cor"], $rs["descricao"] );
+        }
+        return null;
     }
 }

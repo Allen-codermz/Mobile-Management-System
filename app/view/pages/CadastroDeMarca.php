@@ -91,7 +91,7 @@ if (isset($_GET['id'])) {
             <h3>Gestão de Celulares</h3>
 
             <nav class="menu">
-                <a href="#" class="menu-item">
+                <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
                     <p>Dashboard</p>
                 </a>
@@ -116,7 +116,7 @@ if (isset($_GET['id'])) {
                     <p>Modelos</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
                     <p>Cores</p>
                 </a>

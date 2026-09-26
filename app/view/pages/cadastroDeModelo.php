@@ -109,12 +109,12 @@ if (isset($_GET['id'])) {
                     <p>Marcas</p>
                 </a>
 
-                <a href="#" class="menu-item active">
+                <a href="../pages/cadastroDaCor.php" class="menu-item active">
                     <i class="fa-solid fa-box"></i>
                     <p>Modelos</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
                     <p>Cores</p>
                 </a>

@@ -183,7 +183,7 @@ body {
 .input-wrapper select {
     width: 100%;
     height: 46px;
-    padding: 0 15px 0 43px;
+    padding: 0 0px 0 43px;
     border: 1px solid var(--borda);
     border-radius: 11px;
     background-color: #FFFEFC;
@@ -317,7 +317,7 @@ card-info {
     text-transform: capitalize;
 }
 
-.card-info .marca {
+.card-info .pais {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -325,7 +325,20 @@ card-info {
     font-size: 13px;
 }
 
-.card-info .marca i {
+.card-info .pais i {
+    color: var(--castanho);
+    font-size: 13px;
+}
+
+.card-info .fabricante {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+.card-info .fabricante i {
     color: var(--castanho);
     font-size: 13px;
 }

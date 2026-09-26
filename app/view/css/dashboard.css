@@ -1,0 +1,26 @@
+:root {
+    --fundo: #F8F5F0;
+    --branco: #FFFDFC;
+    --castanho-escuro: #4A3B32;
+    --castanho: #A67C62;
+    --castanho-claro: #C9A98F;
+    --bege: #F0E6DD;
+    --borda: #E8DED4;
+    --texto: #332A25;
+    --texto-secundario: #88796E;
+    --sucesso: #7A9E7E;
+    --perigo: #C47B6D;
+}
+
+* {
+    border: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: sans-serif;
+}

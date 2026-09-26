@@ -123,7 +123,7 @@ if (isset($_GET['codigoContinente'])) {
                     <p>Modelos</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
                     <p>Cores</p>
                 </a>

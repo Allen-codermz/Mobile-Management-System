@@ -1,14 +1,14 @@
-<?php
-error_reporting(E_ALL);
+<?php 
 ini_set('display_errors', 1);
 
-include_once __DIR__ . '/../../model/cor.php';
-include_once __DIR__ . '/../../controller/ControllerCor.php';
+include_once __DIR__ . '/../../model/marca.php';
+include_once __DIR__ . '/../../controller/ControllerMarca.php';
 include_once __DIR__ . '/../../config/conexao.php';
 
 
-$marcaCor = new ControllerCor($conexao);
-$cores = $marcaCor->listar();
+$marcaController = new ControllerMarca($conexao);
+$marcas = $marcaController->listar();
+$fabricantes = $marcaController->listarFabricantes();
 
 
 if (isset($_POST['salvar'])) {
@@ -80,7 +80,7 @@ if (isset($_GET['id'])) {
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Page Title</title>
-    <link rel='stylesheet' href='../css/cadastroDeCor.css'>
+    <link rel='stylesheet' href='../css/cadastroDeMarca.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
@@ -90,12 +90,12 @@ if (isset($_GET['id'])) {
             <h3>Gestão de Celulares</h3>
 
             <nav class="menu">
-                <a href="#" class="menu-item">
+                <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
                     <p>Dashboard</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item active">
                     <i class="fa-solid fa-mobile-screen"></i>
                     <p>Celulares</p>
                 </a>
@@ -105,7 +105,7 @@ if (isset($_GET['id'])) {
                     <p>Fabricantes</p>
                 </a>
 
-                <a href="../pages/CadastroDeMarca.php" class="menu-item">
+                <a href="#" class="menu-item">
                     <i class="fa-solid fa-tag"></i>
                     <p>Marcas</p>
                 </a>
@@ -115,7 +115,7 @@ if (isset($_GET['id'])) {
                     <p>Modelos</p>
                 </a>
 
-                <a href="#" class="menu-item active">
+                <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
                     <p>Cores</p>
                 </a>
@@ -130,7 +130,7 @@ if (isset($_GET['id'])) {
         <main class="main">
             <header class="page-header">
                 <div>
-                    <h1>Cores</h1>
+                    <h1>Celulares</h1>
                 </div>
             </header>
 
@@ -139,17 +139,29 @@ if (isset($_GET['id'])) {
                     <input type="hidden" name="id" value="<?= isset($marca) ? $marca->getCodigoMarca() : ''; ?>">
                     <div class="campos-linha">
                         <div class="campo">
-                            <label for="codigoFabricante">Cor</label>
+                            <label for="codigoFabricante">Fabricante</label>
                             <div class="input-wrapper">
-                                <i class="fa-solid fa-palette"></i>
-                                <input type="color" name="" id="" value="#C9A98F">
+                                <i class="fa-solid fa-building"></i>
+                                <select name="codigoFabricante" id="codigoFabricante" required>
+                                    <option value="">Selecione o fabricante</option>
+                                    <?php foreach ($fabricantes as $fabricante) { ?>
+                                        <option
+                                            value="<?= $fabricante['codigoFabricante']; ?>"
+                                            <?= isset($marca) &&
+                                                $marca->getCodigoFabricante() == $fabricante['codigoFabricante']
+                                                ? 'selected'
+                                                : ''; ?>>
+                                            <?= $fabricante['fabricante']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                         <div class="campo">
-                            <label for="marca">Codigo hex da cor</label>
+                            <label for="marca">Marca</label>
                             <div class="input-wrapper">
-                                <i class="fa-solid fa-hashtag"></i>
-                                <input type="text" id="marca" name="nome" placeholder="Ex: #fffff" value="<?= isset($marca) ? $marca->getNome() : ''; ?>" required>
+                                <i class="fa-solid fa-tag"></i>
+                                <input type="text" id="marca" name="nome" placeholder="Ex: Samsung" value="<?= isset($marca) ? $marca->getNome() : ''; ?>" required>
                             </div>
                         </div>
                     </div>
@@ -159,7 +171,7 @@ if (isset($_GET['id'])) {
                         <?php if (isset($marca)) { ?>
                             <button type="submit" name="actualizar" class="btn-guardar"> <i class="fa-solid fa-rotate"></i> Actualizar </button>
                         <?php } else { ?>
-                            <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar cor </button>
+                            <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar marca </button>
                         <?php } ?>
                     </div>
                 </form>
@@ -169,8 +181,8 @@ if (isset($_GET['id'])) {
             <section>
                 <div class="cards">
                     <?php
-                    if (count($cores) > 0) {
-                        foreach ($cores as $cor) {
+                    if (count($marcas) > 0) {
+                        foreach ($marcas as $marca) {
                             echo "
                         <div class='card'>
                         <div class='card-top'>
