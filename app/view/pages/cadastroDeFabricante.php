@@ -110,12 +110,12 @@ if (isset($_POST['guardarEdicao'])) {
             <h3>Gestão de Celulares</h3>
 
             <nav class="menu">
-                <a href="#" class="menu-item">
+                <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
                     <p>Dashboard</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
                     <p>Celulares</p>
                 </a>
@@ -140,12 +140,7 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Cores</p>
                 </a>
 
-                <!-- <a href="#" class="menu-item">
-                    <i class="fa-solid fa-palette"></i>
-                    <smal></smal>
-                </a> -->
-
-                <a href="#" class="menu-item-logout">
+                <a href="../pages/login.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>

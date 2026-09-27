@@ -1,51 +1,93 @@
 <?php
-class ModelCelular
+
+class celular
 {
-    private $codigoCelular;
-    private $referencia;
+    private $numeroDeSerie;
     private $preco;
+    private $anoDeFabrico;
     private $codigoMarca;
-    private $anodeFabrico;
-    private  $codigoFabricante;
+    private $codigoFabricante;
+    private $codigoCor;
+    private $codigoModelo;
 
-    public function _construct($codigoCelular,$referencia,$preco,$codigoMarca,$anodeFabrico, $codigoFabricante)
+    public function __construct($numeroDeSerie, $preco, $anoDeFabrico, $codigoMarca, $codigoFabricante, $codigoCor, $codigoModelo)
     {
-        $this->codigoCelular=$codigoCelular;
-        $this->referencia=$referencia;
-        $this->preco=$preco;
-        $this->codigoMarca=$codigoMarca;
-        $this->anodeFabrico=$anodeFabrico;
-        $this->codigoFabricante=$codigoFabricante;
+        $this->numeroDeSerie = $numeroDeSerie;
+        $this->preco = $preco;
+        $this->anoDeFabrico = $anoDeFabrico;
+        $this->codigoMarca = $codigoMarca;
+        $this->codigoFabricante = $codigoFabricante;
+        $this->codigoCor = $codigoCor;
+        $this->codigoModelo = $codigoModelo;
     }
-    public function getcodigoCelular()
-    {return $this->codigoCelular;}
-    public function setcodigoCelular($codigoCelular)
-    {$this->codigoCelular=$codigoCelular;}
 
-    public function getReferencia()
-    {return $this->referencia;}
-    public function setRefencia($referencia)
-    {$this->referencia=$referencia;}
+    public function getNumeroDeSerie()
+    {
+        return $this->numeroDeSerie;
+    }
 
-    public function getpreco()
-    {return $this->preco;}
+    public function setNumeroDeSerie($numeroDeSerie)
+    {
+        $this->numeroDeSerie = $numeroDeSerie;
+    }
+
+    public function getPreco()
+    {
+        return $this->preco;
+    }
+
     public function setPreco($preco)
-    {$this->preco=$preco;}
+    {
+        $this->preco = $preco;
+    }
+
+    public function getAnoDeFabrico()
+    {
+        return $this->anoDeFabrico;
+    }
+
+    public function setAnoDeFabrico($anoDeFabrico)
+    {
+        $this->anoDeFabrico = $anoDeFabrico;
+    }
 
     public function getCodigoMarca()
-    {return $this->codigoMarca;}
-    public function setcodigoMarca($codigoMarca)
-    {$this->codigoMarca=$codigoMarca;}
+    {
+        return $this->codigoMarca;
+    }
 
-    public function getanodefabrico()
-    {return $this->anodeFabrico;}
-    public function setanodefabrico($anodeFabrico)
-    {$this->anodeFabrico=$anodeFabrico;}
+    public function setCodigoMarca($codigoMarca)
+    {
+        $this->codigoMarca = $codigoMarca;
+    }
 
-    public function getcodigoFabricante()
-    {return $this->codigoFabricante;}
-    public function setcodigoFabricante($codigoFabricante)
-    {$this->codigoFabricante=$codigoFabricante;}
+    public function getCodigoFabricante()
+    {
+        return $this->codigoFabricante;
+    }
 
+    public function setCodigoFabricante($codigoFabricante)
+    {
+        $this->codigoFabricante = $codigoFabricante;
+    }
+
+    public function getCodigoCor()
+    {
+        return $this->codigoCor;
+    }
+
+    public function setCodigoCor($codigoCor)
+    {
+        $this->codigoCor = $codigoCor;
+    }
+
+    public function getCodigoModelo()
+    {
+        return $this->codigoModelo;
+    }
+
+    public function setCodigoModelo($codigoModelo)
+    {
+        $this->codigoModelo = $codigoModelo;
+    }
 }
-?>

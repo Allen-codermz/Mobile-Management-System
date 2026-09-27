@@ -7,70 +7,73 @@ include_once __DIR__ . '/../../controller/ControllerCor.php';
 include_once __DIR__ . '/../../config/conexao.php';
 
 
-$marcaCor = new ControllerCor($conexao);
-$cores = $marcaCor->listar();
+$corController = new ControllerCor($conexao);
+$cores = $corController->listar();
 
-
+//accao: criar uma cor
 if (isset($_POST['salvar'])) {
-    if (isset($_POST["nome"]) && isset($_POST["codigoFabricante"])) {
-        $nome = $_POST["nome"];
-        $codigoFabricante = $_POST["codigoFabricante"];
-        $marca = new marca(null, $nome, $codigoFabricante, null);
-        $result = $marcaController->criar($marca);
+    if (isset($_POST["corHex"]) && isset($_POST["descricao"])) {
+        $corHex = $_POST["corHex"];
+        $descricao = $_POST["descricao"];
+        $cor = new cor(null, $corHex, $descricao);
+        $result = $corController->criar($cor);
         if ($result) {
-            echo "
-            <div class='mensagem-sucesso'>
-                Marca registada com sucesso!
-            </div>";
+            header("Location: cadastroDaCor.php");
+            exit;
         } else {
             echo "
             <div class='mensagem-erro'>
-                Marca não registada!
+                Cor não registada!
             </div>";
         }
-        $marcas = $marcaController->listar();
+        $cores = $corController->listar();
     }
 }
 
-//UPDATE FOR REAL
-
-if (isset($_POST['actualizar'])) {
-if (isset($_POST["nome"]) && isset($_POST["codigoFabricante"])) {
-    $id = $_POST['id'];
-    $nome = $_POST['nome'];
-    $codigoFabricante = $_POST['codigoFabricante'];
-    $marca = new marca( $id, $nome, $codigoFabricante, null );
-    $result = $marcaController->actualizar($marca);
-    if ($result) {
-        echo "<div class:'mensagem-sucesso'>
-        Marca actualizada!";
-    } else {
-        echo "<div class='mensagem-erro'>
-                Marca não actualizda!
-            </div>";
+//accao: apagar uma cor
+$corSelecionada = null;
+if (isset($_GET['apagar']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    foreach ($cores as $cor) {
+        if ($cor->getCodigoCor() == $id) {
+            $corSelecionada = $cor;
+            break;
+        }
     }
-    $marcas = $marcaController->listar();
-    }}
+}
 
+//Modal para editar
+$corEditar = null;
+if (isset($_GET['editar']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $corEditar = $corController->encontrarId($id);
+}
 
-//DELETE FOR REAL
+//guardar a edicao
+if (isset($_POST['guardarEdicao'])) {
+    $id = $_POST['id'];
+    $corHex = $_POST['corHex'];
+    $descricao = $_POST['descricao'];
+    $cor = new cor($id, $corHex, $descricao);
+    $resultado = $corController->editar($cor);
+    if ($resultado) {
+        header("Location: cadastroDaCor.php");
+        exit;
+    } else {
+        echo "Cor não foi actualizada";
+    }
+}
+
+//Modal para eliminar
 if (isset($_POST['apagar'])) {
     $id = $_POST['id'];
-    if ($marcaController->remover($id)) {
-        echo "Marca removida";
-        $marcas = $marcaController->listar();
+    if ($corController->remover($id)) {
+        header("Location: cadastroDaCor.php");
+        exit;
     } else {
-        echo "Marca não foi removida";
+        echo "Cor não foi removida";
     }
 }
-
-//
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $marca = $marcaController->encontrarId($id);
-}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -90,12 +93,12 @@ if (isset($_GET['id'])) {
             <h3>Gestão de Celulares</h3>
 
             <nav class="menu">
-                <a href="#" class="menu-item">
+                <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
                     <p>Dashboard</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
                     <p>Celulares</p>
                 </a>
@@ -120,7 +123,7 @@ if (isset($_GET['id'])) {
                     <p>Cores</p>
                 </a>
 
-                <a href="#" class="menu-item-logout">
+                <a href="../pages/login.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>
@@ -136,67 +139,179 @@ if (isset($_GET['id'])) {
 
             <section class="formulario-card">
                 <form action="" method="post" class="formulario">
-                    <input type="hidden" name="id" value="<?= isset($marca) ? $marca->getCodigoMarca() : ''; ?>">
                     <div class="campos-linha">
                         <div class="campo">
-                            <label for="codigoFabricante">Cor</label>
+                            <label for="cor">Cor</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-palette"></i>
-                                <input type="color" name="" id="" value="#C9A98F">
+                                <input type="color" name="cor" id="cor" value="#C9A98F" required>
                             </div>
                         </div>
                         <div class="campo">
-                            <label for="marca">Codigo hex da cor</label>
+                            <label for="corHex">Codigo hex da cor</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-hashtag"></i>
-                                <input type="text" id="marca" name="nome" placeholder="Ex: #fffff" value="<?= isset($marca) ? $marca->getNome() : ''; ?>" required>
+                                <input type="text" id="corHex" name="corHex" placeholder="Ex: #A89CD9" required>
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label for="descricao">Descricao da cor</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-align-left"></i>
+                                <input type="text" id="descricao" name="descricao" placeholder="Ligth Purple" readonly>
                             </div>
                         </div>
                     </div>
 
                     <div class="botoes">
                         <button type="reset" class="btn-cancelar"> <i class="fa-solid fa-eraser"></i> Limpar </button>
-                        <?php if (isset($marca)) { ?>
-                            <button type="submit" name="actualizar" class="btn-guardar"> <i class="fa-solid fa-rotate"></i> Actualizar </button>
-                        <?php } else { ?>
-                            <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar cor </button>
-                        <?php } ?>
+                        <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar cor </button>
                     </div>
                 </form>
             </section>
 
 
             <section>
-                <div class="cards">
-                    <?php
-                    if (count($cores) > 0) {
-                        foreach ($cores as $cor) {
-                            echo "
-                        <div class='card'>
-                        <div class='card-top'>
-                        <span class='codigo'>{$marca->getCodigoMarca()}</span>
-                        </div>
-                        <div class='card-info'>
-                        <h3>{$marca->getNome()}</h3>
-                        <p class='fabricante'> <i class='fa-solid fa-building'></i> {$marca->getFabricante()} </p>
-                        </div>
-                        <div class='acoes'>
-                        <form method='get'>
-                        <input type='hidden' name='id' value='{$marca->getCodigoMarca()}'>
-                        <button type='submit' name='editar' class='btn-editar'> <i class='fa-solid fa-pen'></i> Editar </button>
-                        </form>
-                        <form method='post'>
-                        <input type='hidden' name='id' value='{$marca->getCodigoMarca()}'>
-                        <button type='submit' name='apagar' class='btn-apagar'> <i class='fa-solid fa-trash'></i> Apagar </button>
-                        </form>
-                        </div>
-                        </div>";
-                        }
-                    }
-                    ?>
+                <div class="tabela-container">
+                    <table class="tabela-fabricantes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cor(Hexadecimal)</th>
+                                <th>descricao</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (count($cores) > 0) {
+                                foreach ($cores as $cor) {
+                                    echo "
+                    <tr>
+                        <td>
+                            <span class='codigo'>
+                                {$cor->getCodigoCor()}
+                            </span>
+                        </td>
+                        <td class='nome-cor'>
+                            {$cor->getCorHex()}
+                        </td>
+                        <td>
+                            <span class='descricao'>
+                                <i class='fa-solid fa-align-left'></i>
+                                {$cor->getDescricao()}
+                            </span>
+                        </td>
+                        <td>
+                            <div class='acoes'>
+                                <form method='get'>
+                                    <input type='hidden'  name='id'  value='{$cor->getCodigoCor()}' >
+                                    <button type='submit'  name='editar'  class='btn-editar' > <i class='fa-solid fa-pen'></i> Editar </button>
+                                </form>
+                                <form method='get'>
+                                    <input type='hidden' name='id' value='{$cor->getCodigoCor()}' >
+                                    <button  type='submit' name='apagar' class='btn-apagar' > <i class='fa-solid fa-trash'></i> Apagar </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>";
+                                }
+                            } else {
+                                echo "
+                <tr>
+                    <td colspan='5' class='sem-registos'>
+                        <img src='../images/file-searching-animate.svg' alt='' width=400px>
+                    </td>
+                </tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
                 </div>
             </section>
+
+            <?php if ($corSelecionada !== null): ?>
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div>
+                                <h2>Apagar cor</h2>
+                                <p>Confirme os dados antes de continuar.</p>
+                            </div>
+                            <a href="cadastroDaCor.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                        </div>
+                        <div class="modal-conteudo">
+                            <div class="campo-modal">
+                                <label>ID</label>
+                                <input type="text" value="#<?= $corSelecionada->getCodigoCor() ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Cor(Hexadecimal)</label>
+                                <input type="text" value="<?= htmlspecialchars($corSelecionada->getCorHex()) ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Descricao</label>
+                                <input type="text" value="<?= htmlspecialchars($corSelecionada->getDescricao()) ?>" disabled>
+                            </div>
+                        </div>
+                        <div class="modal-aviso">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Tem a certeza de que pretende eliminar esta cor? </span>
+                        </div>
+                        <div class="modal-acoes">
+                            <a href="cadastroDaCor.php" class="btn-cancelarr"> Cancelar </a>
+                            <form method="post">
+                                <input type="hidden" name="id" value="<?= $corSelecionada->getCodigoCor() ?>">
+                                <button type="submit" name="apagar" class="btn-confirmar-apagar"> <i class="fa-solid fa-trash"></i> Confirmar eliminação </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if ($corEditar !== null): ?>
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div>
+                                <h2>Editar cor</h2>
+                                <p>Confirme os dados antes de continuar.</p>
+                            </div>
+                            <a href="cadastroDaCor.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                        </div>
+                        <form method="post">
+                            <input type="hidden" name="id" value="<?= $corEditar->getCodigoCor() ?>">
+                            <div class="campo-modal">
+                                <label>ID</label>
+                                <input type="text" value="<?= $corEditar->getCodigoCor() ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Cor(Hexadecimal)</label>
+                                <input type="text" name="corHex" value="<?= htmlspecialchars($corEditar->getCorHex()) ?>" required>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Descrição</label>
+                                <input type="text" name="descricao" value="<?= htmlspecialchars($corEditar->getDescricao()) ?>" required>
+                            </div>
+                            <div class="modal-aviso">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>
+                                    Tem a certeza de que pretende guardar
+                                    as alterações desta cor?
+                                </span>
+                            </div>
+                            <div class="modal-acoes">
+                                <a href="cadastroDaCor.php" class="btn-cancelarr"> Cancelar </a>
+                                <button type="submit" name="guardarEdicao" class="btn-confirmar-apagar"> Guardar alterações </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
         </main>
+</body>
+
 </body>
 
 </html>

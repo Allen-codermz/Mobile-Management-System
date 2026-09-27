@@ -122,7 +122,7 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Cores</p>
                 </a>
 
-                <a href="#" class="menu-item-logout">
+                <a href="../pages/login.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>
