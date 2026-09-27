@@ -71,8 +71,9 @@ class ControllerModelo
     //UPDATE
     function editar($modelo)
     {
-        $sql = "update modelo set modelo = '{$modelo->getNome()}',codigoMarca = '{$modelo->getcodigoMarca()}'
-            where codigoModelo = {$modelo->getCodigoModelo()}";
+        $sql = "UPDATE modelo
+            SET modelo = '{$modelo->getNome()}', codigoMarca = {$modelo->getCodigoMarca()}
+            WHERE codigoModelo= {$modelo->getCodigoModelo()}";
 
         $result = mysqli_query($this->conexao, $sql);
         if ($result) {

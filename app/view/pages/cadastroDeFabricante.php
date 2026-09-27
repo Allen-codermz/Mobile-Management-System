@@ -7,7 +7,6 @@ include_once __DIR__ . '/../../model/fabricante.php';
 include_once __DIR__ . '/../../controller/ControllerFabricante.php';
 include_once __DIR__ . '/../../config/conexao.php';
 
-
 $fabricanteController = new ControllerFabricante($conexao);
 $fabricantes = $fabricanteController->listar();
 $paises = array();
@@ -18,8 +17,8 @@ if (isset($_POST['salvar'])) {
     if (isset($_POST["nome"]) && isset($_POST["codigoPais"])) {
         $nome = $_POST["nome"];
         $codigoPais = $_POST["codigoPais"];
-        $sql = "insert into fabricante values(null,'{$nome}','{$codigoPais}')";
-        $result = mysqli_query($conexao, $sql);
+        $fabricante = new fabricante(null, $nome, $codigoPais, null, null, null);
+        $result = $marcaController->criar($fabricante);
         if ($result) {
             header("Location: cadastroDeFabricante.php");
             exit;
@@ -30,23 +29,7 @@ if (isset($_POST['salvar'])) {
     }
 }
 
-//UPDATE FOR REAL
-if (isset($_POST['actualizar'])) {
-    if (isset($_POST["nome"]) && isset($_POST["codigoPais"])) {
-        $id = $_POST['id'];
-        $nome = $_POST["nome"];
-        $codigoPais = $_POST["codigoPais"];
-        $sql = "update fabricante set fabricante='{$nome}', codigoPais='{$codigoPais}' where codigoFabricante={$id}";
-        $result = mysqli_query($conexao, $sql);
-        if ($result) {
-            header("Location: cadastroDeFabricante.php");
-            exit;
-        } else {
-            echo "Fabricante não actualizado";
-        }
-        $fabricantes = $fabricanteController->listar();
-    }
-}
+
 
 //DELETE FOR REAL
 if (isset($_POST['apagar'])) {
@@ -61,11 +44,8 @@ if (isset($_POST['apagar'])) {
 
 //
 if (isset($_GET['id'])) {
-
     $id = $_GET['id'];
-
     $fabricante = $fabricanteController->encontraId($id);
-
     if ($fabricante) {
         $paises = $fabricanteController->listarPaises(
             $conexao,
@@ -78,7 +58,39 @@ if (isset($_GET['codigoContinente'])) {
     $codigoContinente = $_GET['codigoContinente'];
     $paises = $fabricanteController->listarPaises($conexao, $codigoContinente);
 }
+
+$fabricanteSelecionado = null;
+if (isset($_GET['apagar']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    foreach ($fabricantes as $fabricante) {
+        if ($fabricante->getCodigoFabricante() == $id) {
+            $fabricanteSelecionado = $fabricante;
+            break;
+        }
+    }
+}
+
+$fabricanteEditar = null;
+if (isset($_GET['editar']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $fabricanteEditar = $fabricanteController->encontraId($id);
+}
+
+if (isset($_POST['guardarEdicao'])) {
+    $id = $_POST['id'];
+    $nome = $_POST['nome'];
+    $codigoPais = $_POST['codigoPais'];
+    $fabricante = new Fabricante($id, $nome, $codigoPais, null, null, null);
+    $resultado = $fabricanteController->editar($fabricante);
+    if ($resultado) {
+        header("Location: cadastroDeFabricante.php");
+        exit;
+    }
+}
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang='en'>
@@ -207,35 +219,169 @@ if (isset($_GET['codigoContinente'])) {
 
 
             <section>
-                <div class="cards">
-                    <?php
-                    if (count($fabricantes) > 0) {
-                        foreach ($fabricantes as $fabricante) {
-                            echo "
-                        <div class='card'>
-                        <div class='card-top'>
-                        <span class='codigo'>{$fabricante->getCodigoFabricante()}</span>
-                        </div>
-                        <div class='card-info'>
-                        <h3>{$fabricante->getNome()}</h3>
-                        <p class='pais'> <i class='fa-solid fa-location-dot'></i> {$fabricante->getPais()} </p>
-                        </div>
-                        <div class='acoes'>
-                        <form method='get'>
-                        <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}'>
-                        <button type='submit' name='editar' class='btn-editar'> <i class='fa-solid fa-pen'></i> Editar </button>
-                        </form>
-                        <form method='post'>
-                        <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}'>
-                        <button type='submit' name='apagar' class='btn-apagar'> <i class='fa-solid fa-trash'></i> Apagar </button>
-                        </form>
-                        </div>
-                        </div>";
-                        }
-                    }
-                    ?>
+                <div class="tabela-container">
+                    <table class="tabela-fabricantes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fabricante</th>
+                                <th>País</th>
+                                <th>Continente</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (count($fabricantes) > 0) {
+                                foreach ($fabricantes as $fabricante) {
+                                    echo "
+                    <tr>
+                        <td>
+                            <span class='codigo'>
+                                #{$fabricante->getCodigoFabricante()}
+                            </span>
+                        </td>
+                        <td class='nome-fabricante'>
+                            {$fabricante->getNome()}
+                        </td>
+                        <td>
+                            <span class='localizacao'>
+                                <i class='fa-solid fa-location-dot'></i>
+                                {$fabricante->getPais()}
+                            </span>
+                        </td>
+                        <td>
+                            <span class='localizacao'>
+                                <i class='fa-solid fa-earth-africa'></i>
+                                {$fabricante->getContinente()}
+                            </span>
+                        </td>
+                        <td>
+                            <div class='acoes'>
+                                <form method='get'>
+                                    <input type='hidden'  name='id'  value='{$fabricante->getCodigoFabricante()}' >
+                                    <button type='submit'  name='editar'  class='btn-editar' > <i class='fa-solid fa-pen'></i> Editar </button>
+                                </form>
+                                <form method='get'>
+                                    <input type='hidden' name='id' value='{$fabricante->getCodigoFabricante()}' >
+                                    <button  type='submit' name='apagar' class='btn-apagar' > <i class='fa-solid fa-trash'></i> Apagar </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>";
+                                }
+                            } else {
+                                echo "
+                <tr>
+                    <td colspan='5' class='sem-registos'>
+                        <img src='../images/file-searching-animate.svg' alt='' width=400px>
+                    </td>
+                </tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
                 </div>
             </section>
+
+            <?php if ($fabricanteSelecionado !== null): ?>
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div>
+                                <h2>Apagar fabricante</h2>
+                                <p>Confirme os dados antes de continuar.</p>
+                            </div>
+                            <a href="cadastroDeFabricante.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                        </div>
+                        <div class="modal-conteudo">
+                            <div class="campo-modal">
+                                <label>ID</label>
+                                <input type="text" value="#<?= $fabricanteSelecionado->getCodigoFabricante() ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Fabricante</label>
+                                <input type="text" value="<?= htmlspecialchars($fabricanteSelecionado->getNome()) ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>País</label>
+                                <input type="text" value="<?= htmlspecialchars($fabricanteSelecionado->getPais()) ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Continente</label>
+                                <input type="text" value="<?= htmlspecialchars($fabricanteSelecionado->getContinente()) ?>" disabled>
+                            </div>
+                        </div>
+                        <div class="modal-aviso">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>
+                                Tem a certeza de que pretende eliminar
+                                este fabricante?
+                            </span>
+                        </div>
+                        <div class="modal-acoes">
+                            <a href="cadastroDeFabricante.php" class="btn-cancelarr"> Cancelar </a>
+                            <form method="post">
+                                <input type="hidden" name="id" value="<?= $fabricanteSelecionado->getCodigoFabricante() ?>">
+                                <button type="submit" name="apagar" class="btn-confirmar-apagar"> <i class="fa-solid fa-trash"></i> Confirmar eliminação </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if ($fabricanteEditar !== null): ?>
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div>
+                                <h2>Editar fabricante</h2>
+                                <p>Confirme os dados antes de continuar.</p>
+                            </div>
+                            <a href="cadastroDeFabricante.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                        </div>
+                        <form method="post">
+                            <input type="hidden" name="id" value="<?= $fabricanteEditar->getCodigoFabricante() ?>">
+                            <div class="campo-modal">
+                                <label>ID</label>
+                                <input type="text" value="<?= $fabricanteEditar->getCodigoFabricante() ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Fabricante</label>
+                                <input type="text" name="nome" value="<?= htmlspecialchars($fabricanteEditar->getNome()) ?>" required>
+                            </div>
+                            <div class="campo-modal">
+                                <label>País</label>
+                                <select name="codigoPais" required>
+                                    <?php foreach ($paises as $pais): ?>
+                                        <option
+                                            value="<?= $pais['codigoPais'] ?>"
+                                            <?= $pais['codigoPais'] == $fabricanteEditar->getCodigoPais() ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($pais['pais']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Continente</label>
+                                <input type="text" value="<?= htmlspecialchars($fabricanteEditar->getContinente()) ?>" disabled>
+                            </div>
+                            <div class="modal-aviso">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>
+                                    Tem a certeza de que pretende editar
+                                    este fabricante?
+                                </span>
+                            </div>
+                            <div class="modal-acoes">
+                                <a href="cadastroDeFabricante.php" class="btn-cancelarr"> Cancelar </a>
+                                <button type="submit" name="guardarEdicao" class="btn-confirmar-apagar"> Guardar alterações </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
         </main>
 </body>
 

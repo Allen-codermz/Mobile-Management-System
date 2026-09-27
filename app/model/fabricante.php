@@ -7,19 +7,22 @@ class Fabricante
     private $codigoPais;
     private $pais;
     private $codigoContinente;
+    private $continente;
 
     public function __construct(
         $codigoFabricante,
         $nome,
         $codigoPais,
         $pais,
-        $codigoContinente = null
+        $codigoContinente,
+        $continente
     ) {
         $this->codigoFabricante = $codigoFabricante;
         $this->nome = $nome;
         $this->codigoPais = $codigoPais;
         $this->pais = $pais;
         $this->codigoContinente = $codigoContinente;
+        $this->continente = $continente;
     }
 
     public function getCodigoFabricante()
@@ -45,5 +48,10 @@ class Fabricante
     public function getCodigoContinente()
     {
         return $this->codigoContinente;
+    }
+
+    public function getContinente()
+    {
+        return $this->continente;
     }
 }

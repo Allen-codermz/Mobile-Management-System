@@ -68,10 +68,11 @@ class ControllerMarca
         return $result;
     }
 
-    function actualizar($marca)
+    function editar($marca)
     {
-        $sql = "Update marca set marca = '{$marca->getNome()}',codigoMarca = {$marca->getCodigofabricante()}, marca = '{$marca->getFabricante()}')
-            where codigoMarca ={$marca->getCodigoMarca()}";
+        $sql = "UPDATE marca
+            SET marca = '{$marca->getNome()}', codigoFabricante = {$marca->getCodigoFabricante()}
+            WHERE codigoMarca = {$marca->getCodigoMarca()}";
 
         $result = mysqli_query($this->conexao, $sql);
         if ($result) {

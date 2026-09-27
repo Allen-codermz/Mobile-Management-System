@@ -252,111 +252,104 @@ body {
     transform: translateY(0);
 }
 
-.cards {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
+.tabela-container {
+    width: 100%;
+    margin-top: 2rem;
+    overflow-x: auto;
+    border-radius: 16px;
+
 }
 
-.card {
-    margin-top: 2rem;
-    ;
-    position: relative;
+.tabela-fabricantes {
+    width: 100%;
+    border-collapse: collapse;
     background-color: var(--branco);
     border: 1px solid var(--borda);
-    border-radius: 18px;
-    padding: 20px;
-    min-height: 190px;
-    display: flex;
-    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
     box-shadow: 0 6px 20px rgba(74, 59, 50, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.card:hover {
-    transform: translateY(-4px);
-    border-color: var(--castanho-claro);
-    box-shadow: 0 12px 28px rgba(74, 59, 50, 0.09);
+.tabela-fabricantes thead {
+    background-color: var(--bege);
 }
 
-.card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 22px;
+.tabela-fabricantes th {
+    padding: 16px 18px;
+    text-align: left;
+    color: var(--castanho);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.tabela-fabricantes tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.tabela-fabricantes tbody tr:hover {
+    background-color: var(--off-white);
+}
+
+.tabela-fabricantes td {
+    padding: 16px 18px;
+    color: var(--texto);
+    font-size: 14px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.tabela-fabricantes tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .codigo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 38px;
-    height: 26px;
+    min-width: 42px;
+    height: 28px;
     padding: 0 9px;
-    /* background-color: var(--bege); */
+    background-color: var(--bege);
     color: var(--castanho);
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.3px;
 }
 
-.codigo::before {
-    content: "#";
-}
-
-card-info {
-    flex: 1;
-}
-
-.card-info h3 {
-    color: var(--texto);
-    font-size: 18px;
+.nome-fabricante {
     font-weight: 650;
-    margin-bottom: 10px;
-    text-transform: capitalize;
+    color: var(--texto) !important;
 }
 
-.card-info .pais {
-    display: flex;
+.fabricante {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     color: var(--texto-secundario);
     font-size: 13px;
 }
 
-.card-info .pais i {
-    color: var(--castanho);
-    font-size: 13px;
-}
-
-.card-info .fabricante {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--texto-secundario);
-    font-size: 13px;
-}
-
-.card-info .fabricante i {
+.fabricante i {
     color: var(--castanho);
     font-size: 13px;
 }
 
 .acoes {
     display: flex;
+    align-items: center;
     gap: 8px;
-    margin-top: 18px;
 }
 
 .acoes form {
-    flex: 1;
+    margin: 0;
 }
 
 .acoes button {
-    width: 100%;
-    height: 36px;
-    border-radius: 9px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
@@ -364,8 +357,8 @@ card-info {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    gap: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .btn-editar {
@@ -391,4 +384,161 @@ card-info {
     color: #FFFFFF;
     transform: translateY(-1px);
 }
+
+.sem-registos {
+    text-align: center !important;
+    padding: 35px !important;
+    color: var(--texto-secundario) !important;
+    
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(74, 59, 50, 0.18);
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.modal-header h2 {
+    margin: 0 0 5px;
+    color: var(--texto);
+    font-size: 20px;
+}
+
+.modal-header p {
+    margin: 0;
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+.modal-fechar {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background-color: var(--bege);
+    color: var(--castanho);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.modal-fechar:hover {
+    background-color: var(--castanho);
+    color: #FFFFFF;
+}
+
+.campo-modal {
+    margin-bottom: 16px;
+}
+
+.campo-modal label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--texto);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.campo-modal input, select {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+    background-color: var(--off-white);
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.campo-modal input:disabled {
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.modal-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    background-color: var(--bege);
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.modal-aviso i {
+    color: var(--perigo);
+    margin-top: 2px;
+}
+
+.modal-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.btn-cancelarr,
+.btn-confirmar-apagar {
+    height: 38px;
+    padding: 0 15px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    text-decoration: none;
+}
+
+.btn-cancelarr {
+    border: 1px solid var(--borda);
+    background-color: var(--branco);
+    color: var(--texto);
+}
+
+.btn-cancelar:hover {
+    background-color: var(--bege);
+}
+
+.btn-confirmar-apagar {
+    border: none;
+    background-color: var(--perigo);
+    color: #FFFFFF;
+}
+
+.btn-confirmar-apagar:hover {
+    opacity: 0.9;
+}
+
 

@@ -43,10 +43,12 @@ class ControllerFabricante
     function listar()
     {
         $fabricantes = array();
-        $sql = "select  f.codigoFabricante, f.fabricante, f.codigoPais, p.pais
-        from fabricante f
-        inner join Pais p
-        on f.codigoPais = p.codigoPais";
+        $sql = "SELECT f.codigoFabricante, f.fabricante, p.codigoPais, p.pais, c.codigoContinente, c.continente
+            FROM fabricante f
+            INNER JOIN Pais p 
+            ON f.codigoPais = p.codigoPais
+            INNER JOIN Continente c
+            ON p.codigoContinente = c.codigoContinente";
         $result = mysqli_query($this->conexao, $sql);
         if ($result) {
             while ($rs = mysqli_fetch_assoc($result)) {
@@ -54,8 +56,10 @@ class ControllerFabricante
                 $nome = $rs["fabricante"];
                 $codigoPais = $rs["codigoPais"];
                 $pais = $rs["pais"];
+                $codigoContinente = $rs["codigoContinente"];
+                $continente = $rs["continente"];
 
-                $fabricante = new fabricante($id, $nome, $codigoPais, $pais);
+                $fabricante = new fabricante($id, $nome, $codigoPais, $pais, $codigoContinente, $continente);
                 array_push($fabricantes, $fabricante);
             }
         }
@@ -65,7 +69,7 @@ class ControllerFabricante
     //CREATE
     function criar($fabricante)
     {
-        $sql = "select * from fabricante where fabricante = '{$fabricante->getNome()}' and codigoFabricante='{$fabricante->getcodigoPais()}' ";
+        $sql = "select * from fabricante where fabricante = '{$fabricante->getNome()}' and codigoPais='{$fabricante->getcodigoPais()}' ";
         $result = mysqli_query($this->conexao, $sql);
         if (mysqli_num_rows($result) > 0) {
             echo "";
@@ -83,7 +87,7 @@ class ControllerFabricante
     //UPDATE
     function  editar($fabricante)
     {
-        $sql = "update fabricante set fabricante = '{$fabricante->getNome()}',codigoPais = {$fabricante->getcodigoPais()}'
+        $sql = "update fabricante set fabricante = '{$fabricante->getNome()}',codigoPais = '{$fabricante->getcodigoPais()}'
             where codigoFabricante ={$fabricante->getCodigoFabricante()}";
         $result = mysqli_query($this->conexao, $sql);
         if ($result) {
@@ -104,22 +108,6 @@ class ControllerFabricante
         return $result;
     }
 
-
-
-    // function encotraId($id)
-    // {
-    // $sql = "select  f.codigoFabricante, m.fabricante, m.codigoP, f.fabricante
-    //     from marca m
-    //     inner join fabricante f
-    // on m.codigofabricante = f.codigoFabricante
-    // where m.codigoMarca = $id";
-    // $result = mysqli_query($this->conexao, $sql);
-    // if ($result && mysqli_num_rows($result) > 0) {
-    //     $rs = mysqli_fetch_assoc($result);
-    //     return new marca($rs['codigoMarca'], $rs['marca'], $rs['codigoFabricante'], null);
-    // }
-    // return null;
-
     function encontraId($id)
     {
         $sql = "select f.codigoFabricante, f.fabricante, f.codigoPais, p.pais, p.codigoContinente, c.continente
@@ -128,11 +116,11 @@ class ControllerFabricante
             on f.codigoPais = p.codigoPais
             inner join Continente c
             on p.codigoContinente = c.codigoContinente
-            where f.codigoFabricante = $id";
+            where f.codigoFabricante = {$id} ";
         $result = mysqli_query($this->conexao, $sql);
         if ($result && mysqli_num_rows($result) > 0) {
             $rs = mysqli_fetch_assoc($result);
-            return new fabricante($rs['codigoFabricante'], $rs['fabricante'], $rs['codigoPais'], $rs['pais'], $rs['codigoContinente']);
+            return new fabricante($rs['codigoFabricante'], $rs['fabricante'], $rs['codigoPais'], $rs['pais'], $rs['codigoContinente'],$rs['continente']);
         }
         return null;
     }

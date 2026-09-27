@@ -19,7 +19,7 @@ if (isset($_POST['salvar'])) {
         $modelo = new modelo(null, $nome, $codigoMarca, null);
         $result = $modeloController->criar($modelo);
         if ($result) {
-            header("Location: cadastroDeFabricante.php");
+            header("Location: cadastroDeModelo.php");
             exit;
         } else {
             echo "
@@ -31,34 +31,12 @@ if (isset($_POST['salvar'])) {
     }
 }
 
-//UPDATE FOR REAL
-
-if (isset($_POST['actualizar'])) {
-    if (isset($_POST["nome"]) && isset($_POST["codigoMarca"])) {
-        $id = $_POST['id'];
-        $nome = $_POST['nome'];
-        $codigoMarca = $_POST['codigoMarca'];
-        $modelo = new modelo($id, $nome, $codigoMarca, null);
-        $result = $modeloController->editar($modelo);
-        if ($result) {
-            header("Location: cadastroDeFabricante.php");
-            exit;
-        } else {
-            echo "<div class='mensagem-erro'>
-                Marca não actualizda!
-            </div>";
-        }
-        $modelos = $modeloController->listar();
-    }
-}
-
-
 //DELETE FOR REAL
 if (isset($_POST['apagar'])) {
     $id = $_POST['id'];
     if ($modeloController->remover($id)) {
-        echo "Modelo removido";
-        $modelos = $modeloController->listar();
+        header("Location: cadastroDeModelo.php");
+        exit;
     } else {
         echo "Modelo não foi removida";
     }
@@ -69,6 +47,36 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $modelo = $modeloController->encontrarId($id);
 }
+
+$modeloSelecionado = null;
+if (isset($_GET['apagar']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    foreach ($modelos as $modelo) {
+        if ($modelo->getCodigoModelo() == $id) {
+            $modeloSelecionado = $modelo;
+            break;
+        }
+    }
+}
+
+$modeloEditar = null;
+if (isset($_GET['editar']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $modeloEditar = $modeloController->encontrarId($id);
+}
+
+if (isset($_POST['guardarEdicao'])) {
+    $id = $_POST['id'];
+    $nome = $_POST['nome'];
+    $codigoModelo = $_POST['codigoModelo'];
+    $modelo = new modelo($id, $nome, $codigoModelo, null);
+    $resultado = $modeloController->editar($modelo);
+    if ($resultado) {
+        header("Location: cadastroDeModelo.php");
+        exit;
+    }
+}
+
 
 ?>
 
@@ -178,35 +186,151 @@ if (isset($_GET['id'])) {
 
 
             <section>
-                <div class="cards">
-                    <?php
-                    if (count($modelos) > 0) {
-                        foreach ($modelos as $modelo) {
-                            echo "
-                        <div class='card'>
-                        <div class='card-top'>
-                        <span class='codigo'>{$modelo->getCodigoModelo()}</span>
-                        </div>
-                        <div class='card-info'>
-                        <h3>{$modelo->getNome()}</h3>
-                        <p class='marca'> <i class='fa-solid fa-tag'></i> {$modelo->getMarca()} </p>
-                        </div>
-                        <div class='acoes'>
-                        <form method='get'>
-                        <input type='hidden' name='id' value='{$modelo->getCodigoModelo()}'>
-                        <button type='submit' name='editar' class='btn-editar'> <i class='fa-solid fa-pen'></i> Editar </button>
-                        </form>
-                        <form method='post'>
-                        <input type='hidden' name='id' value='{$modelo->getCodigoModelo()}'>
-                        <button type='submit' name='apagar' class='btn-apagar'> <i class='fa-solid fa-trash'></i> Apagar </button>
-                        </form>
-                        </div>
-                        </div>";
-                        }
-                    }
-                    ?>
+                <div class="tabela-container">
+                    <table class="tabela-fabricantes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Modelo</th>
+                                <th>Marca</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (count($modelos) > 0) {
+                                foreach ($modelos as $modelo) {
+                                    echo "
+                    <tr>
+                        <td>
+                            <span class='codigo'>
+                                {$modelo->getCodigoModelo()}
+                            </span>
+                        </td>
+                        <td class='nome-marca'>
+                            {$modelo->getNome()}
+                        </td>
+                        <td>
+                            <span class='fabricante'>
+                                <i class='fa-solid fa-tag'></i>
+                                {$modelo->getMarca()}
+                            </span>
+                        </td>
+                        <td>
+                            <div class='acoes'>
+                                <form method='get'>
+                                    <input type='hidden'  name='id'  value='{$modelo->getCodigoModelo()}' >
+                                    <button type='submit'  name='editar'  class='btn-editar' > <i class='fa-solid fa-pen'></i> Editar </button>
+                                </form>
+                                <form method='get'>
+                                    <input type='hidden' name='id' value='{$modelo->getCodigoModelo()}' >
+                                    <button  type='submit' name='apagar' class='btn-apagar' > <i class='fa-solid fa-trash'></i> Apagar </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>";
+                                }
+                            } else {
+                                echo "
+                <tr>
+                    <td colspan='5' class='sem-registos'>
+                        <img src='../images/file-searching-animate.svg' alt='' width=400px>
+                    </td>
+                </tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
                 </div>
             </section>
+
+            <?php if ($modeloSelecionado !== null): ?>
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div>
+                                <h2>Apagar marca</h2>
+                                <p>Confirme os dados antes de continuar.</p>
+                            </div>
+                            <a href="cadastroDeModelo.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                        </div>
+                        <div class="modal-conteudo">
+                            <div class="campo-modal">
+                                <label>ID</label>
+                                <input type="text" value="#<?= $modeloSelecionado->getCodigoMarca() ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Marca</label>
+                                <input type="text" value="<?= htmlspecialchars($modeloSelecionado->getNome()) ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Fabricante</label>
+                                <input type="text" value="<?= htmlspecialchars($modeloSelecionado->getMarca()) ?>" disabled>
+                            </div>
+                        </div>
+                        <div class="modal-aviso">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Tem a certeza de que pretende eliminar esta marca? </span>
+                        </div>
+                        <div class="modal-acoes">
+                            <a href="cadastroDeModelo.php" class="btn-cancelarr"> Cancelar </a>
+                            <form method="post">
+                                <input type="hidden" name="id" value="<?= $modeloSelecionado->getCodigoMarca() ?>">
+                                <button type="submit" name="apagar" class="btn-confirmar-apagar"> <i class="fa-solid fa-trash"></i> Confirmar eliminação </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if ($modeloEditar !== null): ?>
+                <div class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div>
+                                <h2>Editar marca</h2>
+                                <p>Confirme os dados antes de continuar.</p>
+                            </div>
+                            <a href="cadastroDeModelo.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                        </div>
+                        <form method="post">
+                            <input type="hidden" name="id" value="<?= $modeloEditar->getCodigoModelo() ?>">
+                            <div class="campo-modal">
+                                <label>ID</label>
+                                <input type="text" value="<?= $modeloEditar->getCodigoModelo() ?>" disabled>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Modelo</label>
+                                <input type="text" name="nome" value="<?= htmlspecialchars($modeloEditar->getNome()) ?>" required>
+                            </div>
+                            <div class="campo-modal">
+                                <label>Marca</label>
+                                <select name="codigoModelo" required>
+                                    <?php foreach ($marcas as $marca): ?>
+                                        <option
+                                            value="<?= $marca['codigoMarca'] ?>"
+                                            <?= $marca['codigoMarca'] == $modeloEditar->getCodigoMarca() ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($marca['marca']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="modal-aviso">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>
+                                    Tem a certeza de que pretende editar
+                                    este fabricante?
+                                </span>
+                            </div>
+                            <div class="modal-acoes">
+                                <a href="cadastroDeModelo.php" class="btn-cancelarr"> Cancelar </a>
+                                <button type="submit" name="guardarEdicao" class="btn-confirmar-apagar"> Guardar alterações </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
         </main>
 </body>
 
