@@ -97,12 +97,12 @@ if (isset($_POST['guardarEdicao'])) {
             <h3>Gestão de Celulares</h3>
 
             <nav class="menu">
-                <a href="#" class="menu-item">
+                <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
                     <p>Dashboard</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
                     <p>Celulares</p>
                 </a>
@@ -117,7 +117,7 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Marcas</p>
                 </a>
 
-                <a href="../pages/cadastroDaCor.php" class="menu-item active">
+                <a href="../pages/cadastroDeModelo.php" class="menu-item active">
                     <i class="fa-solid fa-box"></i>
                     <p>Modelos</p>
                 </a>
