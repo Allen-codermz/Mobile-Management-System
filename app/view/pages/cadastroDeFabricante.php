@@ -18,7 +18,7 @@ if (isset($_POST['salvar'])) {
         $nome = $_POST["nome"];
         $codigoPais = $_POST["codigoPais"];
         $fabricante = new fabricante(null, $nome, $codigoPais, null, null, null);
-        $result = $marcaController->criar($fabricante);
+        $result = $fabricanteController->criar($fabricante);
         if ($result) {
             header("Location: cadastroDeFabricante.php");
             exit;

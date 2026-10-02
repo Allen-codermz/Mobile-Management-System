@@ -10,12 +10,29 @@ include_once __DIR__ . '/../../config/conexao.php';
 $corController = new ControllerCor($conexao);
 $cores = $corController->listar();
 
+$corEscolhida = "#C9A98F";
+$descricaoCor = "";
+$corConfirmada = false;
+
+if (isset($_POST['confirmarCor'])) {
+    if (!empty($_POST['corHex'])) {
+        $corEscolhida = $_POST['corHex']; // faz o picker e o campo HEX manterem a cor
+        $descricaoCor = $corController->obterDescricao($corEscolhida);
+        if ($descricaoCor === false) {
+            $mensagemErro = "Não foi possível obter a descrição da cor.";
+            $descricaoCor = "";
+        } else {
+            $corConfirmada = true;
+        }
+    }
+}
+
+
 //accao: criar uma cor
 if (isset($_POST['salvar'])) {
-    if (isset($_POST["corHex"]) && isset($_POST["descricao"])) {
+    if (isset($_POST["corHex"]) && !empty($_POST["corHex"])) {
         $corHex = $_POST["corHex"];
-        $descricao = $_POST["descricao"];
-        $cor = new cor(null, $corHex, $descricao);
+        $cor = new cor(null, $corHex, "");
         $result = $corController->criar($cor);
         if ($result) {
             header("Location: cadastroDaCor.php");
@@ -91,7 +108,6 @@ if (isset($_POST['apagar'])) {
     <div class="layout">
         <aside class="sidebar">
             <h3>Gestão de Celulares</h3>
-
             <nav class="menu">
                 <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
@@ -141,31 +157,36 @@ if (isset($_POST['apagar'])) {
                 <form action="" method="post" class="formulario">
                     <div class="campos-linha">
                         <div class="campo">
-                            <label for="cor">Cor</label>
+                            <label for="corHex">
+                                Selecionar cor
+                            </label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-palette"></i>
-                                <input type="color" name="cor" id="cor" value="#C9A98F" required>
+                                <input type="color" name="corHex" id="corHex" value="<?= htmlspecialchars($corEscolhida) ?>" required>
                             </div>
                         </div>
                         <div class="campo">
-                            <label for="corHex">Codigo hex da cor</label>
+                            <label for="codigoHex"> Código HEX </label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-hashtag"></i>
-                                <input type="text" id="corHex" name="corHex" placeholder="Ex: #A89CD9" required>
+                                <input type="text" id="codigoHex" value="<?= htmlspecialchars($corEscolhida) ?>" readonly>
                             </div>
                         </div>
                         <div class="campo">
-                            <label for="descricao">Descricao da cor</label>
+                            <label for="descricao"> Descrição da cor </label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-align-left"></i>
-                                <input type="text" id="descricao" name="descricao" placeholder="Ligth Purple" readonly>
+                                <input type="text" id="descricao" name="descricao" value="<?= htmlspecialchars($descricaoCor) ?>" placeholder="Descrição da cor" readonly>
                             </div>
                         </div>
                     </div>
-
                     <div class="botoes">
                         <button type="reset" class="btn-cancelar"> <i class="fa-solid fa-eraser"></i> Limpar </button>
-                        <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar cor </button>
+                        <?php if (!$corConfirmada): ?>
+                            <button type="submit" name="confirmarCor" class="btn-guardar"> <i class="fa-solid fa-check"></i> Confirmar cor </button>
+                        <?php else: ?>
+                            <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar cor </button>
+                        <?php endif; ?>
                     </div>
                 </form>
             </section>
@@ -219,7 +240,7 @@ if (isset($_POST['apagar'])) {
                             } else {
                                 echo "
                 <tr>
-                    <td colspan='5' class='sem-registos'>
+                    <td colspan='4' class='sem-registos'>
                         <img src='../images/file-searching-animate.svg' alt='' width=400px>
                     </td>
                 </tr>";
@@ -310,8 +331,7 @@ if (isset($_POST['apagar'])) {
                 </div>
             <?php endif; ?>
         </main>
-</body>
-
+    </div>
 </body>
 
 </html>

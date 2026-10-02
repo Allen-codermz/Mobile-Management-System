@@ -74,7 +74,7 @@ class ControllerFabricante
         if (mysqli_num_rows($result) > 0) {
             echo "";
         } else {
-            $sql = "insert into fabricante values(null,'{$fabricante->getNome()}','{$fabricante->getcodigopais()}','{$fabricante->getPais()}')";
+            $sql = "insert into fabricante values(null,'{$fabricante->getNome()}','{$fabricante->getcodigopais()}')";
             $result = mysqli_query($this->conexao, $sql);
             if ($result) {
                 // header('location:index.php');

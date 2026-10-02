@@ -1,5 +1,7 @@
 <?php
+error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 
 include_once __DIR__ . '/../../model/celular.php';
 include_once __DIR__ . '/../../controller/ControllerCelular.php';
@@ -20,7 +22,7 @@ if (isset($_POST['salvar'])) {
     $anoDeFabrico = $_POST['anoDeFabrico'];
     $codigoMarca = $_POST['codigoMarca'];
     $codigoFabricante = $_POST['codigoFabricante'];
-    $codigoCor = $_POST['codigoCor'];
+    $codigoCor = $_POST['descricao'];
     $codigoModelo = $_POST['codigoModelo'];
     $celular = new celular(null, $preco, $anoDeFabrico, $codigoMarca, $codigoFabricante, $codigoCor, $codigoModelo);
     $result = $celularController->criar($celular);
@@ -201,16 +203,16 @@ if (isset($_POST['guardarEdicao'])) {
                         </div>
 
                         <div class="campo">
-                            <label for="codigoCor"> Cor </label>
+                            <label for="descricao"> Cor </label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-palette"></i>
-                                <select name="codigoCor" id="codigoCor" required>
+                                <select name="descricao" id="descricao" required>
                                     <option value=""> Selecione a cor </option>
                                     <?php foreach ($cores as $cor) { ?>
                                         <option
                                             value="<?= $cor['codigoCor']; ?>"
-                                            <?= isset($celular) && $celular->getCodigoCor() == $cor['codigoCor'] ? 'selected' : ''; ?>>
-                                            <?= $cor['Cor']; ?>
+                                            <?= isset($celular) && $celular->getDescricao() == $cor['codigoCor'] ? 'selected' : ''; ?>>
+                                            <?= $cor['descricao']; ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -271,13 +273,13 @@ if (isset($_POST['guardarEdicao'])) {
                         <td>
                             <span class='marca'>
                                 <i class='fa-solid fa-tag'></i>
-                                {$celular->getMarca()}
+                                {$celular->getCodigoMarca()}
                             </span>
                         </td>
                         <td>
                             <span class='modelo'>
                                 <i class='fa-solid fa-box'></i>
-                                {$celular->getModelo()}
+                                {$celular->getCodigoModelo()}
                             </span>
                         </td>
                         <td>
@@ -294,7 +296,7 @@ if (isset($_POST['guardarEdicao'])) {
                         </td>
                         <td>
                             <span class='existencia'>
-                                <i class='fa-solid fa-building'></i>
+                                <i class='fa-solid fa-calendar'></i>
                                 {$celular->getFabricante()}
                             </span>
                         </td>

@@ -56,7 +56,7 @@ class ControllerCelular
     function listarCores()
     {
         $cores = array();
-        $sql = "SELECT codigoCor, Cor FROM cor";
+        $sql = "SELECT codigoCor, descricao, Cor FROM cor";
         $result = mysqli_query($this->conexao, $sql);
         if ($result) {
             while ($rs = mysqli_fetch_assoc($result)) {

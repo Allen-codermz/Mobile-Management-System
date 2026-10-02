@@ -97,7 +97,7 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Dashboard</p>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
                     <p>Celulares</p>
                 </a>

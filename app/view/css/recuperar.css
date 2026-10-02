@@ -32,32 +32,39 @@ body {
     height: 90vh;
     box-shadow: 4px 5px 28px var(--castanho-escuro);
     overflow: hidden;
+    background-color: var(--bege);
 }
 
-.direita {
+.esquerda {
+    background-color: var(--fundo);
     height: 100%;
-    max-width: 40%;
+    max-width: 55%;
     min-width: 40%;
     display: flex;
 }
 
-.direita img {
+.esquerda img {
     margin-left: 2rem;
-    width: 100%;
+    width: 80%;
 }
 
-.esquerda {
-    background-color: var(--bege);
-    height: 100%;
+.direita {
+    height: 60%;
     padding: 1.5em 3.5em;
 }
 
 form {
-    margin-top: 5rem;
+    margin-top: 15em;
     margin-left: 6rem;
     display: flex;
     flex-direction: column;
     gap: 5px;
+}
+
+h2 {
+    font-size:xx-large;
+    font-weight: 100;
+    color: var(--texto);
 }
 
 .pw {
@@ -74,10 +81,9 @@ select {
     border-radius: 11px;
     cursor: pointer;
     transition: 0.4s;
-    
 }
 
-select,
+select:focus,
 input:focus {
     border-color: var(--castanho);
     background-color: #FFFFFF;
@@ -85,16 +91,20 @@ input:focus {
     box-shadow: 0 0 2px rgba(166, 124, 98, 0.12);
 }
 
+select {
+    appearance: none;
+}
+
 .actions {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 4.5em;
+    margin-top: 1em;
     gap: .3em;
 }
 
-.esquerda h2 {
+.direita h2 {
     font-family: monospace;
     text-align: center;
     font-size: 24px;
@@ -102,7 +112,7 @@ input:focus {
     margin-bottom: 3rem;
 }
 
-.esquerda p {
+.direita p {
     font-size: 12px;
     font-weight: 400;
     margin-bottom: 1em;
@@ -111,7 +121,6 @@ input:focus {
 label {
     font-size: 14px;
     font-weight: 600;
-    margin-top: 1.5rem;
 }
 
 label::after {
@@ -135,10 +144,4 @@ label::after {
 
 .btn1:hover {
     background-color: var(--castanho);
-}
-
-.link{
-    margin-top: 1em;
-    text-decoration: none;
-    color: var(--texto);
 }

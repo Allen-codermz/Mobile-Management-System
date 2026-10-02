@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ . '/../model/cor.php';
 include_once __DIR__ . '/../config/conexao.php';
+include_once __DIR__ . '/../api/API_cor.php';
 
 class ControllerCor
 {
@@ -30,8 +31,20 @@ class ControllerCor
         }
         return $cores;
     }
+
+    public function obterDescricao($corHex)
+    {
+        return obterDescricaoCor($corHex);
+    }
+
     function criar($cor)
     {
+        $descricao = obterDescricaoCor($cor->getCorHex());
+        if ($descricao === false) {
+            echo "";
+            return false;
+        }
+        $cor->setDescricao($descricao);
         $sql = "select * from cor where Cor = '{$cor->getCorHex()}' or descricao='{$cor->getDescricao()}'";
         $result = mysqli_query($this->conexao, $sql);
         if (mysqli_num_rows($result) > 0) {
@@ -40,7 +53,7 @@ class ControllerCor
             $sql = "insert into cor values(null,'{$cor->getCorHex()}','{$cor->getDescricao()}')";
             $result = mysqli_query($this->conexao, $sql);
             if ($result) {
-                header("Location: CadastroDeCor.php");
+                header("Location: cadastroDaCor.php");
                 exit;
             } else {
                 echo "";
