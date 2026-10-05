@@ -45,11 +45,13 @@ body {
     z-index: 100;
 }
 
+
 .menu {
     display: flex;
     flex-direction: column;
     gap: 6px;
-
+    flex: 1;
+    min-height: 0;
 }
 
 .menu-item {
@@ -76,7 +78,7 @@ body {
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    margin-top: 90px;
+    margin-top: auto;
 }
 
 .menu-item-logout i {
@@ -124,12 +126,54 @@ body {
     padding: 38px 45px 50px;
 }
 
+.page-header {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 35px;
+}
+
 .page-header h1 {
     color: var(--texto);
     font-size: 32px;
     font-weight: 700;
     letter-spacing: -0.8px;
-    margin-bottom: 17px;
+    margin: 0;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background-color: var(--fundo);
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: var(--castanho);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-profile div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.user-profile strong {
+    font-size: 13px;
+    color: var(--texto);
+}
+
+.user-profile span {
+    font-size: 11px;
+    color: var(--texto-secundario);
 }
 
 .formulario-card {
@@ -291,7 +335,7 @@ body {
 }
 
 .tabela-fabricantes tbody tr:hover {
-    background-color: var(--off-white);
+    background-color: var(--branco);
 }
 
 .tabela-fabricantes td {

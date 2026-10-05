@@ -1,16 +1,38 @@
 <?php
 
+require_once __DIR__ . '/../../auth/log.php';
 require_once __DIR__ . '/../../auth/auth.php';
 require_once __DIR__ . '/../../auth/permissoes.php';
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-
 include_once __DIR__ . '/../../model/celular.php';
 include_once __DIR__ . '/../../controller/ControllerCelular.php';
 include_once __DIR__ . '/../../config/conexao.php';
 
+
+$nomeUsuario = $_SESSION['nome'];
+$apelidoUsuario = $_SESSION['apelido'];
+$codigoPerfil = $_SESSION['codigoPerfil'];
+
+
+switch ($codigoPerfil) {
+    case 1:
+        $nomePerfil = "Operador";
+        break;
+
+    case 2:
+        $nomePerfil = "SuperOperador";
+        break;
+
+    case 3:
+        $nomePerfil = "Administrador";
+        break;
+
+    case 4:
+        $nomePerfil = "Auditor";
+        break;
+
+    default:
+        $nomePerfil = "Utilizador";
+}
 
 $celularController = new ControllerCelular($conexao);
 $celulares = $celularController->listar();
@@ -154,10 +176,19 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Cores</p>
                 </a>
 
-                <a href="../pages/cadastroUsuario.php" class="menu-item">
-                    <i class="fa-solid fa-users"></i>
-                    <p>Administração</p>
-                </a>
+                <?php if (podeGerirUsuarios()): ?>
+                    <a href="../pages/cadastroUsuario.php" class="menu-item">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <p>Administração</p>
+                    </a>
+                <?php endif; ?>
+
+                <?php if (podeVerLogs()): ?>
+                    <a href="../pages/logsDoSistema.php" class="menu-item">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <p>Logs do Sistema</p>
+                    </a>
+                <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
@@ -170,6 +201,15 @@ if (isset($_POST['guardarEdicao'])) {
             <header class="page-header">
                 <div>
                     <h1>Celulares</h1>
+                </div>
+                <div class="user-profile">
+                    <div class="user-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <strong> <?= htmlspecialchars($nomeUsuario . ' ' . $apelidoUsuario) ?> </strong>
+                        <span> <?= htmlspecialchars($nomePerfil) ?> </span>
+                    </div>
                 </div>
             </header>
 

@@ -12,6 +12,9 @@ if (isset($_SESSION['codigoUsuario'])) {
 
 include_once __DIR__ . '/../../config/conexao.php';
 include_once __DIR__ . '/../../controller/controllerLogin.php';
+require_once __DIR__ . '/../../model/Logs.php';
+require_once __DIR__ . '/../../controller/ControllerLogs.php';
+
 
 $controllerUsuario = new controllerLogin($conexao);
 $erro = "";
@@ -29,6 +32,9 @@ if (isset($_POST['login'])) {
         $_SESSION['username'] = $usuario->getUsername();
         $_SESSION['email'] = $usuario->getEmail();
         $_SESSION['codigoPerfil'] = $usuario->getCodigoPerfil();
+        $logController = new ControllerLog($conexao);
+        $log = new Logs(null, $_SESSION['codigoUsuario'], "LOGIN", "Iniciou sessão no sistema");
+        $logController->criar($log);
         header("Location: dashboard.php");
         exit;
     } else {

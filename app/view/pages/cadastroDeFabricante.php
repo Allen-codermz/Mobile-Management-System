@@ -1,16 +1,42 @@
 <?php
-
-require_once __DIR__ . '/../../auth/auth.php';
-require_once __DIR__ . '/../../auth/permissoes.php';
-
-
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+require_once __DIR__ . '/../../auth/log.php';
+require_once __DIR__ . '/../../auth/auth.php';
+require_once __DIR__ . '/../../auth/permissoes.php';
 
 include_once __DIR__ . '/../../model/fabricante.php';
 include_once __DIR__ . '/../../controller/ControllerFabricante.php';
 include_once __DIR__ . '/../../config/conexao.php';
+
+
+$nomeUsuario = $_SESSION['nome'];
+$apelidoUsuario = $_SESSION['apelido'];
+$codigoPerfil = $_SESSION['codigoPerfil'];
+
+
+switch ($codigoPerfil) {
+    case 1:
+        $nomePerfil = "Operador";
+        break;
+
+    case 2:
+        $nomePerfil = "SuperOperador";
+        break;
+
+    case 3:
+        $nomePerfil = "Administrador";
+        break;
+
+    case 4:
+        $nomePerfil = "Auditor";
+        break;
+
+    default:
+        $nomePerfil = "Utilizador";
+}
+
 
 $fabricanteController = new ControllerFabricante($conexao);
 $fabricantes = $fabricanteController->listar();
@@ -25,6 +51,7 @@ if (isset($_POST['salvar'])) {
         $fabricante = new fabricante(null, $nome, $codigoPais, null, null, null);
         $result = $fabricanteController->criar($fabricante);
         if ($result) {
+            registrarLog("CRIAR", "Criou o fabricante: " . $nome);
             header("Location: cadastroDeFabricante.php");
             exit;
         } else {
@@ -39,7 +66,9 @@ if (isset($_POST['salvar'])) {
 //DELETE FOR REAL
 if (isset($_POST['apagar'])) {
     $id = $_POST['id'];
+    $fabricante = $fabricanteController->encontraId($id);
     if ($fabricanteController->remover($id)) {
+        registrarLog("APAGAR", "Apagou o fabricante: " . $fabricante->getNome());
         header("Location: cadastroDeFabricante.php");
         exit;
     } else {
@@ -88,6 +117,7 @@ if (isset($_POST['guardarEdicao'])) {
     $fabricante = new Fabricante($id, $nome, $codigoPais, null, null, null);
     $resultado = $fabricanteController->editar($fabricante);
     if ($resultado) {
+        registrarLog("EDITAR", "Editou o fabricante: " . $nome);
         header("Location: cadastroDeFabricante.php");
         exit;
     }
@@ -144,10 +174,19 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Cores</p>
                 </a>
 
-                <a href="../pages/cadastroUsuario.php" class="menu-item">
-                    <i class="fa-solid fa-users"></i>
-                    <p>Administração</p>
-                </a>
+                <?php if (podeGerirUsuarios()): ?>
+                    <a href="../pages/cadastroUsuario.php" class="menu-item">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <p>Administração</p>
+                    </a>
+                <?php endif; ?>
+
+                <?php if (podeVerLogs()): ?>
+                    <a href="../pages/logsDoSistema.php" class="menu-item">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <p>Logs do Sistema</p>
+                    </a>
+                <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
@@ -160,6 +199,15 @@ if (isset($_POST['guardarEdicao'])) {
             <header class="page-header">
                 <div>
                     <h1>Fabricantes</h1>
+                </div>
+                <div class="user-profile">
+                    <div class="user-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <strong> <?= htmlspecialchars($nomeUsuario . ' ' . $apelidoUsuario) ?> </strong>
+                        <span> <?= htmlspecialchars($nomePerfil) ?> </span>
+                    </div>
                 </div>
             </header>
 
@@ -210,7 +258,7 @@ if (isset($_POST['guardarEdicao'])) {
                         </div>
                     </div>
 
-                    
+
 
                     <div class="botoes">
                         <button type="reset" class="btn-cancelar"> <i class="fa-solid fa-eraser"></i> Limpar </button>

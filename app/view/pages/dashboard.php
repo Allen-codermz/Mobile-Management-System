@@ -1,12 +1,51 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 
 require_once __DIR__ . '/../../auth/auth.php';
 require_once __DIR__ . '/../../auth/permissoes.php';
+require_once __DIR__ . '/../../config/conexao.php';
+require_once __DIR__ . '/../../controller/ControllerDashboard.php';
+
+$nomeUsuario = $_SESSION['nome'];
+$apelidoUsuario = $_SESSION['apelido'];
+$codigoPerfil = $_SESSION['codigoPerfil'];
 
 
+switch ($codigoPerfil) {
+    case 1:
+        $nomePerfil = "Operador";
+        break;
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+    case 2:
+        $nomePerfil = "SuperOperador";
+        break;
+
+    case 3:
+        $nomePerfil = "Administrador";
+        break;
+
+    case 4:
+        $nomePerfil = "Auditor";
+        break;
+
+    default:
+        $nomePerfil = "Utilizador";
+}
+
+
+$dashboardController = new ControllerDashboard($conexao);
+
+$totalCelulares = $dashboardController->contarCelulares();
+$totalFabricantes = $dashboardController->contarFabricantes();
+$totalMarcas = $dashboardController->contarMarcas();
+$totalModelos = $dashboardController->contarModelos();
+$totalCores = $dashboardController->contarCores();
+$totalUsuarios = $dashboardController->contarUsuarios();
+
+$fabricantes = $dashboardController->celularesPorFabricante();
+
 
 ?>
 
@@ -57,10 +96,19 @@ ini_set('display_errors', 1);
                     <p>Cores</p>
                 </a>
 
-                <a href="../pages/cadastroUsuario.php" class="menu-item">
-                    <i class="fa-solid fa-users"></i>
-                    <p>Administração</p>
-                </a>
+                <?php if (podeGerirUsuarios()): ?>
+                    <a href="../pages/cadastroUsuario.php" class="menu-item">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <p>Administração</p>
+                    </a>
+                <?php endif; ?>
+
+                <?php if (podeVerLogs()): ?>
+                    <a href="../pages/logsDoSistema.php" class="menu-item">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <p>Logs do Sistema</p>
+                    </a>
+                <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
@@ -71,9 +119,20 @@ ini_set('display_errors', 1);
 
         <main class="main">
             <header class="dashboard-header">
-                <div>
-                    <h1>GESTÃO DE CELULARES</h1>
-                    <p class="subtitle">Explore fabricantes, marcas, modelos e dispositivos registados no sistema.</p>
+
+                <div class="welcome">
+                    <span class="welcome-label">VAMOS GERIR CELULARES DE MANEIRA EFICIENTE??</span>
+                    <h1> Olá, <span class="nome-typing"> <?= htmlspecialchars($nomeUsuario) ?></span> </h1>
+                    <p class="subtitle"> Bem-vindo ao Sistema de Gestão de Celulares. Aqui está a visão geral do catálogo. </p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <strong> <?= htmlspecialchars($nomeUsuario . ' ' . $apelidoUsuario) ?> </strong>
+                        <span> <?= htmlspecialchars($nomePerfil) ?> </span>
+                    </div>
                 </div>
             </header>
 
@@ -86,20 +145,20 @@ ini_set('display_errors', 1);
                         </div>
                     </div>
                     <div class="big-number">
-                        2
+                        <?= $totalCelulares ?>
                     </div>
-                    <p>celulares registados</p>
+                    <p> <?= $totalCelulares == 1 ? 'celular registado' : 'celulares registados' ?> </p>
                     <div class="stat-details">
                         <div>
-                            <strong>2</strong>
+                            <strong><?= $totalFabricantes ?></strong>
                             <span>Fabricantes</span>
                         </div>
                         <div>
-                            <strong>2</strong>
+                            <strong><?= $totalMarcas ?></strong>
                             <span>Marcas</span>
                         </div>
                         <div>
-                            <strong>2</strong>
+                            <strong><?= $totalModelos ?></strong>
                             <span>Modelos</span>
                         </div>
                     </div>
@@ -113,34 +172,33 @@ ini_set('display_errors', 1);
                         <i class="fa-solid fa-building"></i>
                     </div>
                     <div class="manufacturer-list">
-                        <div class="manufacturer">
-                            <span>Samsung</span>
-                            <div class="bar">
-                                <div style="width: 2%;"></div>
-                            </div>
-                            <strong>2</strong>
-                        </div>
-                        <div class="manufacturer">
-                            <span>Apple</span>
-                            <div class="bar">
-                                <div style="width: 2%;"></div>
-                            </div>
-                            <strong>2</strong>
-                        </div>
-                        <div class="manufacturer">
-                            <span>Xiaomi</span>
-                            <div class="bar">
-                                <div style="width: 2%;"></div>
-                            </div>
-                            <strong>2</strong>
-                        </div>
-                        <div class="manufacturer">
-                            <span>Huawei</span>
-                            <div class="bar">
-                                <div style="width: 2%;"></div>
-                            </div>
-                            <strong>2</strong>
-                        </div>
+                        <?php if (count($fabricantes) > 0): ?>
+                            <?php foreach ($fabricantes as $fabricante): ?>
+                                <?php
+                                $total = $fabricante['total'];
+                                if ($totalCelulares > 0) {
+                                    $percentagem = ($total / $totalCelulares) * 100;
+                                } else {
+                                    $percentagem = 0;
+                                }
+                                ?>
+                                <div class="manufacturer">
+                                    <span>
+                                        <?= htmlspecialchars($fabricante['fabricante']) ?>
+                                    </span>
+                                    <div class="bar">
+                                        <div style="width: <?= $percentagem ?>%;"></div>
+                                    </div>
+                                    <strong>
+                                        <?= $total ?>
+                                    </strong>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="sem-dados">
+                                Nenhum fabricante registado.
+                            </p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </section>
