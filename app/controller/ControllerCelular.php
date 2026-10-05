@@ -66,37 +66,70 @@ class ControllerCelular
         return $cores;
     }
 
-    function listar()
-    {
-        $celulares = array();
+function listar()
+{
+    $celulares = array();
 
-        $sql = "SELECT  ce.numeroDeSerie, ce.preco, ce.anoDeFabrico, ma.codigoMarca, ma.marca,  fa.codigoFabricante, fa.fabricante,  co.codigoCor, co.Cor, co.descricao,  mo.codigoModelo, mo.modelo
-                FROM celulares ce
-                LEFT JOIN marca ma
-                    ON ce.codigoMarca = ma.codigoMarca
-                LEFT JOIN fabricante fa
-                    ON ce.codigoFabricante = fa.codigoFabricante
-                LEFT JOIN cor co
-                    ON ce.codigoCor = co.codigoCor
-                LEFT JOIN modelo mo
-                    ON ce.codigoModelo = mo.codigoModelo";
-        $result = mysqli_query($this->conexao, $sql);
-        if ($result) {
-            while ($rs = mysqli_fetch_assoc($result)) {
-                $id =      $rs["numeroDeSerie"];
-                $preco =              $rs["preco"];
-                $anoDeFabrico =       $rs["anoDeFabrico"];
-                $codigoMarca =        $rs["codigoMarca"];
-                $codigoFabricante =   $rs["codigoFabricante"];
-                $codigoCor =          $rs["codigoCor"];
-                $codigoModelo =       $rs["codigoModelo"];
-                $celular = new celular($id, $preco, $anoDeFabrico, $codigoMarca, $codigoFabricante, $codigoCor, $codigoModelo);
-                array_push($celulares, $celular);
-            }
+    $sql = "SELECT
+                ce.numeroDeSerie,
+                ce.preco,
+                ce.anoDeFabrico,
+                ma.codigoMarca,
+                ma.marca,
+                fa.codigoFabricante,
+                fa.fabricante,
+
+                co.codigoCor,
+                co.Cor,
+                co.descricao,
+
+                mo.codigoModelo,
+                mo.modelo
+
+            FROM celulares ce
+
+            LEFT JOIN marca ma
+                ON ce.codigoMarca = ma.codigoMarca
+
+            LEFT JOIN fabricante fa
+                ON ce.codigoFabricante = fa.codigoFabricante
+
+            LEFT JOIN cor co
+                ON ce.codigoCor = co.codigoCor
+
+            LEFT JOIN modelo mo
+                ON ce.codigoModelo = mo.codigoModelo";
+
+    $result = mysqli_query($this->conexao, $sql);
+
+    if ($result) {
+
+        while ($rs = mysqli_fetch_assoc($result)) {
+
+            // Criar objeto com os códigos
+            $celular = new celular(
+                $rs["numeroDeSerie"],
+                $rs["preco"],
+                $rs["anoDeFabrico"],
+                $rs["codigoMarca"],
+                $rs["codigoFabricante"],
+                $rs["codigoCor"],
+                $rs["codigoModelo"]
+            );
+
+            // Guardar os nomes
+            $celular->setMarca($rs["marca"]);
+            $celular->setFabricante($rs["fabricante"]);
+            $celular->setCor($rs["Cor"]);
+            $celular->setDescricaoCor($rs["descricao"]);
+            $celular->setModelo($rs["modelo"]);
+
+            array_push($celulares, $celular);
         }
-
-        return $celulares;
     }
+
+    return $celulares;
+}
 
     function criar($celular)
     {

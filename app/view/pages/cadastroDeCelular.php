@@ -17,6 +17,7 @@ $cores = $celularController->listarCores();
 
 
 
+
 if (isset($_POST['salvar'])) {
     $preco = $_POST['preco'];
     $anoDeFabrico = $_POST['anoDeFabrico'];
@@ -27,7 +28,7 @@ if (isset($_POST['salvar'])) {
     $celular = new celular(null, $preco, $anoDeFabrico, $codigoMarca, $codigoFabricante, $codigoCor, $codigoModelo);
     $result = $celularController->criar($celular);
     if ($result) {
-        header("Location: cadastroDecelular.php");
+        header("Location: cadastroDeCelular.php");
         exit;
     } else {
         echo "
@@ -51,10 +52,14 @@ if (isset($_POST['apagar'])) {
 
 
 $celularSelecionado = null;
+
 if (isset($_GET['apagar']) && isset($_GET['id'])) {
+
     $id = $_GET['id'];
+
     foreach ($celulares as $celular) {
-        if ($celular->getCodigoMarca() == $id) {
+
+        if ($celular->getNumeroDeSerie() == $id) {
             $celularSelecionado = $celular;
             break;
         }
@@ -68,11 +73,27 @@ if (isset($_GET['editar']) && isset($_GET['id'])) {
 }
 
 if (isset($_POST['guardarEdicao'])) {
+
     $id = $_POST['id'];
-    $nome = $_POST['nome'];
+    $preco = $_POST['preco'];
+    $anoDeFabrico = $_POST['anoDeFabrico'];
+    $codigoMarca = $_POST['codigoMarca'];
     $codigoFabricante = $_POST['codigoFabricante'];
-    $marca = new marca($id, $nome, $codigoFabricante, null);
-    $resultado = $celularController->editar($marca);
+    $codigoCor = $_POST['codigoCor'];
+    $codigoModelo = $_POST['codigoModelo'];
+
+    $celular = new celular(
+        $id,
+        $preco,
+        $anoDeFabrico,
+        $codigoMarca,
+        $codigoFabricante,
+        $codigoCor,
+        $codigoModelo
+    );
+
+    $resultado = $celularController->editar($celular);
+
     if ($resultado) {
         header("Location: cadastroDeCelular.php");
         exit;
@@ -211,7 +232,7 @@ if (isset($_POST['guardarEdicao'])) {
                                     <?php foreach ($cores as $cor) { ?>
                                         <option
                                             value="<?= $cor['codigoCor']; ?>"
-                                            <?= isset($celular) && $celular->getDescricao() == $cor['codigoCor'] ? 'selected' : ''; ?>>
+                                            <?= isset($celular) && $celular->getDescricaoCor() == $cor['codigoCor'] ? 'selected' : ''; ?>>
                                             <?= $cor['descricao']; ?>
                                         </option>
                                     <?php } ?>
@@ -263,29 +284,38 @@ if (isset($_POST['guardarEdicao'])) {
                             <?php
                             if (count($celulares) > 0) {
                                 foreach ($celulares as $celular) {
+                                    $anoAtual = date("Y");
+                                    $tempoExistencia = $anoAtual - $celular->getAnoDeFabrico();
+                                    $textoExistencia = ($tempoExistencia == 1) ? "1 ano" : $tempoExistencia . " anos";
                                     echo "
                     <tr>
                         <td>
                             <span class='codigo'>
-                                {$celular->getNumeroDeSerie()}
+                                #{$celular->getNumeroDeSerie()}
+                            </span>
+                        </td>
+                        <td>
+                            <span class='existencia'>
+                                <i class='fa-solid fa-building'></i>
+                                {$celular->getFabricante()}
                             </span>
                         </td>
                         <td>
                             <span class='marca'>
                                 <i class='fa-solid fa-tag'></i>
-                                {$celular->getCodigoMarca()}
+                                {$celular->getMarca()}
                             </span>
                         </td>
                         <td>
                             <span class='modelo'>
                                 <i class='fa-solid fa-box'></i>
-                                {$celular->getCodigoModelo()}
+                                {$celular->getModelo()}
                             </span>
                         </td>
                         <td>
                             <span class='cor'>
                                 <i class='fa-solid fa-palette'></i>
-                                {$celular->getDescricao()}
+                                {$celular->getCor()}
                             </span>
                         </td>
                         <td>
@@ -294,10 +324,11 @@ if (isset($_POST['guardarEdicao'])) {
                                 {$celular->getPreco()}
                             </span>
                         </td>
+                        
                         <td>
                             <span class='existencia'>
                                 <i class='fa-solid fa-calendar'></i>
-                                {$celular->getFabricante()}
+                                {$textoExistencia}
                             </span>
                         </td>
                         <td>
@@ -329,6 +360,10 @@ if (isset($_POST['guardarEdicao'])) {
             </section>
 
             <?php if ($celularSelecionado !== null): ?>
+                <?php
+                $anoAtual = date("Y");
+                $tempoExistencia = $anoAtual - $celularSelecionado->getAnoDeFabrico();
+                $textoExistencia = ($tempoExistencia == 1) ? "1 ano" : $tempoExistencia . " anos"; ?>
                 <div class="modal-overlay">
                     <div class="modal">
                         <div class="modal-header">
@@ -341,7 +376,7 @@ if (isset($_POST['guardarEdicao'])) {
                         <div class="modal-conteudo">
                             <div class="campo-modal">
                                 <label>ID</label>
-                                <input type="text" value="#<?= $celularSelecionado->getCodigoMarca() ?>" disabled>
+                                <input type="text" value="#<?= $celularSelecionado->getNumeroDeSerie() ?>" disabled>
                             </div>
                             <div class="campo-modal">
                                 <label>Fabricante</label>
@@ -357,15 +392,15 @@ if (isset($_POST['guardarEdicao'])) {
                             </div>
                             <div class="campo-modal">
                                 <label>Cor</label>
-                                <input type="text" value="<?= htmlspecialchars($celularSelecionado->getDescricao()) ?>" disabled>
+                                <input type="text" value="<?= htmlspecialchars($celularSelecionado->getCor()) ?>" disabled>
                             </div>
                             <div class="campo-modal">
                                 <label>Preco</label>
                                 <input type="text" value="<?= htmlspecialchars($celularSelecionado->getPreco()) ?>" disabled>
                             </div>
                             <div class="campo-modal">
-                                <label>Tempo de existencia</label>
-                                <input type="text" value="<?= htmlspecialchars($celularSelecionado->getTempoExistencia()) ?>" disabled>
+                                <label>Tempo de existência</label>
+                                <input type="text" value="<?= htmlspecialchars($textoExistencia) ?>" disabled>
                             </div>
                         </div>
                         <div class="modal-aviso">
@@ -373,9 +408,9 @@ if (isset($_POST['guardarEdicao'])) {
                             <span>Tem a certeza de que pretende eliminar este celular? </span>
                         </div>
                         <div class="modal-acoes">
-                            <a href="CadastroDeMarca.php" class="btn-cancelarr"> Cancelar </a>
+                            <a href="cadastroDeCelular.php" class="btn-cancelarr"> Cancelar </a>
                             <form method="post">
-                                <input type="hidden" name="id" value="<?= $celularSelecionado->getCodigoMarca() ?>">
+                                <input type="hidden" name="id" value="<?= $celularSelecionado->getNumeroDeSerie() ?>">
                                 <button type="submit" name="apagar" class="btn-confirmar-apagar"> <i class="fa-solid fa-trash"></i> Confirmar eliminação </button>
                             </form>
                         </div>
@@ -392,7 +427,7 @@ if (isset($_POST['guardarEdicao'])) {
                                 <h2>Editar celular</h2>
                                 <p>Confirme os dados antes de continuar.</p>
                             </div>
-                            <a href="cadastroDeCor.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
+                            <a href="cadastroDeCelular.php" class="modal-fechar"> <i class="fa-solid fa-xmark"></i> </a>
                         </div>
                         <form method="post">
                             <input type="hidden" name="id" value="<?= $celularEditar->getNumeroDeSerie() ?>">
@@ -439,32 +474,32 @@ if (isset($_POST['guardarEdicao'])) {
                             <div class="campo-modal">
                                 <label>Cor</label>
                                 <select name="codigoCor" required>
-                                    <?php foreach ($modelos as $modelo): ?>
+                                    <?php foreach ($cores as $cor): ?>
                                         <option
                                             value="<?= $cor['codigoCor'] ?>"
-                                            <?= $cor['codigoCor'] == $celularEditar->getCodigoCor() ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($cor['modecorlo']) ?>
+                                            <?= $cor['descricao'] == $celularEditar->getCodigoCor() ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($cor['Cor']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="campo-modal">
                                 <label>Preco</label>
-                                <input type="text" name="nome" value="<?= htmlspecialchars($celularEditar->getPreco()) ?>" required>
+                                <input type="text" name="preco" value="<?= htmlspecialchars($celularEditar->getPreco()) ?>" required>
                             </div>
                             <div class="campo-modal">
                                 <label>Ano de Fabrico</label>
-                                <input type="text" name="nome" value="<?= htmlspecialchars($celularEditar->getAnoDeFabrico()) ?>" required>
+                                <input type="text" name="anoDeFabrico" value="<?= htmlspecialchars($celularEditar->getAnoDeFabrico()) ?>" required>
                             </div>
                             <div class="modal-aviso">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                                 <span>
                                     Tem a certeza de que pretende guardar
-                                    as alterações desta marca?
+                                    as alterações desta celular?
                                 </span>
                             </div>
                             <div class="modal-acoes">
-                                <a href="CadastroDeMarca.php" class="btn-cancelarr"> Cancelar </a>
+                                <a href="cadastroDeCelular.php" class="btn-cancelarr"> Cancelar </a>
                                 <button type="submit" name="guardarEdicao" class="btn-confirmar-apagar"> Guardar alterações </button>
                             </div>
                         </form>

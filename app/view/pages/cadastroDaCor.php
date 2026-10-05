@@ -211,7 +211,7 @@ if (isset($_POST['apagar'])) {
                     <tr>
                         <td>
                             <span class='codigo'>
-                                {$cor->getCodigoCor()}
+                                # {$cor->getCodigoCor()}
                             </span>
                         </td>
                         <td class='nome-cor'>

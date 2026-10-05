@@ -9,6 +9,11 @@ class celular
     private $codigoFabricante;
     private $codigoCor;
     private $codigoModelo;
+    private $marca;
+    private $fabricante;
+    private $cor;
+    private $descricaoCor;
+    private $modelo;
 
     public function __construct($numeroDeSerie, $preco, $anoDeFabrico, $codigoMarca, $codigoFabricante, $codigoCor, $codigoModelo)
     {
@@ -89,5 +94,60 @@ class celular
     public function setCodigoModelo($codigoModelo)
     {
         $this->codigoModelo = $codigoModelo;
+    }
+
+    public function getMarca()
+    {
+        return $this->marca;
+    }
+
+    public function setMarca($marca)
+    {
+        $this->marca = $marca;
+        return $this;
+    }
+
+    public function getFabricante()
+    {
+        return $this->fabricante;
+    }
+
+    public function setFabricante($fabricante)
+    {
+        $this->fabricante = $fabricante;
+        return $this;
+    }
+
+    public function getCor()
+    {
+        return $this->cor;
+    }
+
+    public function setCor($cor)
+    {
+        $this->cor = $cor;
+        return $this;
+    }
+
+    public function getDescricaoCor()
+    {
+        return $this->descricaoCor;
+    }
+
+    public function setDescricaoCor($descricaoCor)
+    {
+        $this->descricaoCor = $descricaoCor;
+        return $this;
+    }
+
+    public function getModelo()
+    {
+        return $this->modelo;
+    }
+
+    public function setModelo($modelo)
+    {
+        $this->modelo = $modelo;
+        return $this;
     }
 }

@@ -75,20 +75,20 @@ ini_set('display_errors', 1);
                         </div>
                     </div>
                     <div class="big-number">
-                        128
+                        2
                     </div>
                     <p>celulares registados</p>
                     <div class="stat-details">
                         <div>
-                            <strong>18</strong>
+                            <strong>2</strong>
                             <span>Fabricantes</span>
                         </div>
                         <div>
-                            <strong>31</strong>
+                            <strong>2</strong>
                             <span>Marcas</span>
                         </div>
                         <div>
-                            <strong>76</strong>
+                            <strong>2</strong>
                             <span>Modelos</span>
                         </div>
                     </div>
@@ -105,30 +105,30 @@ ini_set('display_errors', 1);
                         <div class="manufacturer">
                             <span>Samsung</span>
                             <div class="bar">
-                                <div style="width: 85%;"></div>
+                                <div style="width: 2%;"></div>
                             </div>
-                            <strong>42</strong>
+                            <strong>2</strong>
                         </div>
                         <div class="manufacturer">
                             <span>Apple</span>
                             <div class="bar">
-                                <div style="width: 65%;"></div>
+                                <div style="width: 2%;"></div>
                             </div>
-                            <strong>31</strong>
+                            <strong>2</strong>
                         </div>
                         <div class="manufacturer">
                             <span>Xiaomi</span>
                             <div class="bar">
-                                <div style="width: 50%;"></div>
+                                <div style="width: 2%;"></div>
                             </div>
-                            <strong>24</strong>
+                            <strong>2</strong>
                         </div>
                         <div class="manufacturer">
                             <span>Huawei</span>
                             <div class="bar">
-                                <div style="width: 30%;"></div>
+                                <div style="width: 2%;"></div>
                             </div>
-                            <strong>14</strong>
+                            <strong>2</strong>
                         </div>
                     </div>
                 </div>

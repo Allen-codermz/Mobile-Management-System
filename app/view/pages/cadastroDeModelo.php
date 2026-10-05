@@ -204,7 +204,7 @@ if (isset($_POST['guardarEdicao'])) {
                     <tr>
                         <td>
                             <span class='codigo'>
-                                {$modelo->getCodigoModelo()}
+                                #{$modelo->getCodigoModelo()}
                             </span>
                         </td>
                         <td class='nome-marca'>

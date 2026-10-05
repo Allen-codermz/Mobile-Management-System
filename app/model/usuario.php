@@ -5,18 +5,22 @@ class usuario
     private $codigoUsuario;
     private $nome;
     private $apelido;
+    private $username;
     private $email;
     private $contacto;
-    private $sexo;
+    private $senha;
+    private $codigoPerfil;
 
-    public function __construct($codigoUsuario, $nome, $apelido, $email, $contacto, $sexo)
+    public function __construct($codigoUsuario, $nome, $apelido, $username, $email, $contacto, $senha, $codigoPerfil)
     {
         $this->codigoUsuario = $codigoUsuario;
         $this->nome = $nome;
         $this->apelido = $apelido;
+        $this->username = $username;
         $this->email = $email;
         $this->contacto = $contacto;
-        $this->sexo = $sexo;
+        $this->senha = $senha;
+        $this->codigoPerfil = $codigoPerfil;
     }
 
     public function getCodigoUsuario()
@@ -52,6 +56,17 @@ class usuario
         return $this;
     }
 
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function setUsername($username)
+    {
+        $this->username = $username;
+        return $this;
+    }
+
     public function getEmail()
     {
         return $this->email;
@@ -74,14 +89,25 @@ class usuario
         return $this;
     }
 
-    public function getSexo()
+    public function getSenha()
     {
-        return $this->sexo;
+        return $this->senha;
     }
 
-    public function setSexo($sexo)
+    public function setSenha($senha)
     {
-        $this->sexo = $sexo;
+        $this->senha = $senha;
+        return $this;
+    }
+
+    public function getCodigoPerfil()
+    {
+        return $this->codigoPerfil;
+    }
+
+    public function setCodigoPerfil($codigoPerfil)
+    {
+        $this->codigoPerfil = $codigoPerfil;
         return $this;
     }
 }

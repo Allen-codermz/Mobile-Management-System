@@ -1,3 +1,44 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
+session_start();
+
+include_once __DIR__ . '/../../config/conexao.php';
+include_once __DIR__ . '/../../controller/controllerLogin.php';
+
+$controllerUsuario = new ControllerUsuario($conexao);
+
+$erro = "";
+
+if (isset($_POST['login'])) {
+
+    $username = $_POST['username'];
+    $senha = $_POST['senha'];
+
+    $usuario = $controllerUsuario->login($username, $senha);
+
+    if ($usuario !== null) {
+
+        $_SESSION['codigoUsuario'] = $usuario->getCodigoUsuario();
+        $_SESSION['nome'] = $usuario->getNome();
+        $_SESSION['apelido'] = $usuario->getApelido();
+        $_SESSION['username'] = $usuario->getUsername();
+        $_SESSION['email'] = $usuario->getEmail();
+        $_SESSION['codigoPerfil'] = $usuario->getCodigoPerfil();
+
+        header("Location: dashboard.php");
+        exit;
+
+    } else {
+
+        $erro = "Email ou senha incorretos.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang='en'>
 
@@ -11,17 +52,17 @@
 <body>
     <div class="main">
         <div class="esquerda">
-            <form class="form" id="cadastro">
+            <form class="form" id="cadastro" method="POST">
                 <h2><b>Seja bem vindo de volta</b></h2>
                 <label for="nome">Username</label>
-                <input type="text" id="nome" placeholder="Anacleto">
+                <input type="text" id="nome" placeholder="Anacleto" name="username">
 
                 <div class="pw">
                     <label for="pw">Palavra-passe</label>
-                    <input type="password" name="pw" id="pw" placeholder="••••••">
+                    <input type="password" name="senha" id="pw" placeholder="••••••">
                 </div>
                 <div class="actions">
-                    <button type="submit" class="btn1" form="cadastro">Entrar</button>
+                    <button type="submit" name="login" class="btn1" form="cadastro">Entrar</button>
                     <a class="link" href="../pages/recuperarSenha.php"> esqueceu a sua senha? clique aqui</a>
 
                 </div>
