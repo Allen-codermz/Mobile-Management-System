@@ -1,3 +1,12 @@
+<?php
+require_once __DIR__ . '/../../auth/auth.php';
+require_once __DIR__ . '/../../auth/permissoes.php';
+
+exigirGestaoUsuarios();
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt">
 

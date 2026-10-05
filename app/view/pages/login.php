@@ -3,24 +3,25 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 session_start();
+
+if (isset($_SESSION['codigoUsuario'])) {
+    header("Location: dashboard.php");
+    exit;
+}
 
 include_once __DIR__ . '/../../config/conexao.php';
 include_once __DIR__ . '/../../controller/controllerLogin.php';
 
-$controllerUsuario = new ControllerUsuario($conexao);
-
+$controllerUsuario = new controllerLogin($conexao);
 $erro = "";
 
 if (isset($_POST['login'])) {
-
     $username = $_POST['username'];
     $senha = $_POST['senha'];
-
     $usuario = $controllerUsuario->login($username, $senha);
-
     if ($usuario !== null) {
+        session_regenerate_id(true);
 
         $_SESSION['codigoUsuario'] = $usuario->getCodigoUsuario();
         $_SESSION['nome'] = $usuario->getNome();
@@ -28,13 +29,10 @@ if (isset($_POST['login'])) {
         $_SESSION['username'] = $usuario->getUsername();
         $_SESSION['email'] = $usuario->getEmail();
         $_SESSION['codigoPerfil'] = $usuario->getCodigoPerfil();
-
         header("Location: dashboard.php");
         exit;
-
     } else {
-
-        $erro = "Email ou senha incorretos.";
+        $erro = "Username ou senha incorretos.";
     }
 }
 ?>

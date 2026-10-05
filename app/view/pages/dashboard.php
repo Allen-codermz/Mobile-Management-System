@@ -1,4 +1,10 @@
 <?php
+
+require_once __DIR__ . '/../../auth/auth.php';
+require_once __DIR__ . '/../../auth/permissoes.php';
+
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -51,7 +57,12 @@ ini_set('display_errors', 1);
                     <p>Cores</p>
                 </a>
 
-                <a href="../pages/login.php" class="menu-item-logout">
+                <a href="../pages/cadastroUsuario.php" class="menu-item">
+                    <i class="fa-solid fa-users"></i>
+                    <p>Administração</p>
+                </a>
+
+                <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>
@@ -133,7 +144,7 @@ ini_set('display_errors', 1);
                     </div>
                 </div>
             </section>
-            
+
         </main>
     </div>
 </body>

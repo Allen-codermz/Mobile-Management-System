@@ -1,4 +1,9 @@
 <?php
+
+require_once __DIR__ . '/../../auth/auth.php';
+require_once __DIR__ . '/../../auth/permissoes.php';
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -127,7 +132,12 @@ if (isset($_POST['guardarEdicao'])) {
                     <p>Cores</p>
                 </a>
 
-                <a href="../pages/login.php" class="menu-item-logout">
+                <a href="../pages/cadastroUsuario.php" class="menu-item">
+                    <i class="fa-solid fa-users"></i>
+                    <p>Administração</p>
+                </a>
+
+                <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>
@@ -200,6 +210,22 @@ if (isset($_POST['guardarEdicao'])) {
                             <?php
                             if (count($modelos) > 0) {
                                 foreach ($modelos as $modelo) {
+                                    $botaoEditar = "";
+                                    $botaoApagar = "";
+                                    if (podeEditar()) {
+                                        $botaoEditar = "
+                                    <form method='get'>
+                                    <input type='hidden' name='id' value='{$modelo->getCodigoModelo()}'>
+                                    <button type='submit' name='editar' class='btn-editar'> <i class='fa-solid fa-pen'></i> Editar </button>
+                                    </form>";
+                                    }
+                                    if (podeApagar()) {
+                                        $botaoApagar = "
+                                    <form method='get'>
+                                    <input type='hidden' name='id' value='{$modelo->getCodigoModelo()}'>
+                                    <button type='submit' name='apagar' class='btn-apagar'> <i class='fa-solid fa-trash'></i> Apagar </button>
+                                    </form>";
+                                    }
                                     echo "
                     <tr>
                         <td>
@@ -218,14 +244,8 @@ if (isset($_POST['guardarEdicao'])) {
                         </td>
                         <td>
                             <div class='acoes'>
-                                <form method='get'>
-                                    <input type='hidden'  name='id'  value='{$modelo->getCodigoModelo()}' >
-                                    <button type='submit'  name='editar'  class='btn-editar' > <i class='fa-solid fa-pen'></i> Editar </button>
-                                </form>
-                                <form method='get'>
-                                    <input type='hidden' name='id' value='{$modelo->getCodigoModelo()}' >
-                                    <button  type='submit' name='apagar' class='btn-apagar' > <i class='fa-solid fa-trash'></i> Apagar </button>
-                                </form>
+                                $botaoEditar
+                                $botaoApagar
                             </div>
                         </td>
                     </tr>";
