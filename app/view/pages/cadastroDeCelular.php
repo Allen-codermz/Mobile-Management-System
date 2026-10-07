@@ -136,7 +136,7 @@ if (isset($_POST['guardarEdicao'])) {
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Page Title</title>
-    <link rel='stylesheet' href='../css/cadastroDeMarca.css'>
+    <link rel='stylesheet' href='../css/cadastroDeCelular.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
@@ -177,7 +177,7 @@ if (isset($_POST['guardarEdicao'])) {
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
-                    <a href="../pages/cadastroUsuario.php" class="menu-item">
+                    <a href="../pages/painelADM.php" class="menu-item">
                         <i class="fa-solid fa-user-gear"></i>
                         <p>Administração</p>
                     </a>
@@ -361,7 +361,7 @@ if (isset($_POST['guardarEdicao'])) {
                             </span>
                         </td>
                         <td>
-                            <span class='existencia'>
+                            <span class='fabricante'>
                                 <i class='fa-solid fa-building'></i>
                                 {$celular->getFabricante()}
                             </span>

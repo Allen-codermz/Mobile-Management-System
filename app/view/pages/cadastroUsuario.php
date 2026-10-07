@@ -41,8 +41,6 @@ if (isset($_POST['criar'])) {
         }
     }
 }
-
-
 ?>
 
 
@@ -63,9 +61,9 @@ if (isset($_POST['criar'])) {
         </div>
         <div class="direita">
             <form class="form" id="cadastro" method="POST">
-                <h2><b>Criar conta</b></h2>
+                <h2><b>Criar Usuario</b></h2>
                 <label for="nome">Nome</label>
-                <input name="nome" type="text" id="nome"  placeholder="Anacleto">
+                <input name="nome" type="text" id="nome" placeholder="Anacleto">
 
                 <label for="apelido">Apelido</label>
                 <input name="apelido" type="text" id="apelido" placeholder="juvenal">
@@ -86,12 +84,8 @@ if (isset($_POST['criar'])) {
                         <option value="<?= $perfil['codigoPerfil'] ?>"> <?= htmlspecialchars($perfil['nome']) ?> </option>
                     <?php endforeach; ?>
                 </select>
-
-                <div class="senha">
-                    <label for="senha">Palavra-passe</label>
-                    <input  type="password" name="senha" id="senha" placeholder="••••••">
-
-                </div>
+                <label for="senha">Palavra-passe</label>
+                <input type="password" name="senha" id="senha" placeholder="••••••">
                 <div class="actions">
                     <button name="criar" type="submit" class="btn1" form="cadastro">Criar conta</button>
                 </div>

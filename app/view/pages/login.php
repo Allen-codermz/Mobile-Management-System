@@ -25,7 +25,6 @@ if (isset($_POST['login'])) {
     $usuario = $controllerUsuario->login($username, $senha);
     if ($usuario !== null) {
         session_regenerate_id(true);
-
         $_SESSION['codigoUsuario'] = $usuario->getCodigoUsuario();
         $_SESSION['nome'] = $usuario->getNome();
         $_SESSION['apelido'] = $usuario->getApelido();

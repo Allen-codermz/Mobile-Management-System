@@ -5,10 +5,13 @@ include_once __DIR__ . '/../model/usuario.php';
 class controllerLogin
 {
     private $conexao;
-    public function __construct($conexao){
+    public function __construct($conexao)
+    {
         $this->conexao = $conexao;
     }
-    public function login($username, $senha){
+
+    public function login($username, $senha)
+    {
         $username = mysqli_real_escape_string($this->conexao, $username);
         $sql = "SELECT  codigoUsuario, nome, apelido, username, email, contacto, senha, codigoPerfil
                 FROM usuario
@@ -22,7 +25,7 @@ class controllerLogin
             return null;
         }
         $dados = mysqli_fetch_assoc($resultado);
-        
+
         if (!password_verify($senha, $dados['senha'])) {
             return null;
         }

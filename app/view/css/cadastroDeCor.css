@@ -363,7 +363,7 @@ body {
     font-weight: 700;
 }
 
-.nome-fabricante {
+.nome-cor {
     font-weight: 650;
     color: var(--texto) !important;
 }
@@ -376,7 +376,7 @@ body {
     font-size: 13px;
 }
 
-.fabricante i {
+.descricao i {
     color: var(--castanho);
     font-size: 13px;
 }

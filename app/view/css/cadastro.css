@@ -115,7 +115,7 @@ select {
 .direita p {
     font-size: 12px;
     font-weight: 400;
-    margin-bottom: 1em;
+    /* margin-bottom: 1em; */
 }
 
 label {

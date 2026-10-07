@@ -175,7 +175,7 @@ if (isset($_POST['guardarEdicao'])) {
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
-                    <a href="../pages/cadastroUsuario.php" class="menu-item">
+                    <a href="../pages/painelADM.php" class="menu-item">
                         <i class="fa-solid fa-user-gear"></i>
                         <p>Administração</p>
                     </a>
