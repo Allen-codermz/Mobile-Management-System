@@ -55,14 +55,13 @@ body {
 
 form {
     margin-top: 1rem;
-    margin-left: 6rem;
     display: flex;
     flex-direction: column;
-    gap: 5px;
 }
 
 h2 {
-    font-size:xx-large;
+    margin-left: 120px;
+    font-size: xx-large;
     font-weight: 100;
     color: var(--texto);
 }
@@ -74,12 +73,12 @@ h2 {
 
 input,
 select {
+    width: 100%;
     padding: .8em 1em;
     background-color: #fffefc;
     color: var(--texto);
     border: 1px solid var(--borda);
     border-radius: 11px;
-    cursor: pointer;
     transition: 0.4s;
 }
 
@@ -96,12 +95,12 @@ select {
 }
 
 .actions {
+    margin-left: 15em;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 3;
     justify-content: center;
-    margin-top: 1em;
-    gap: .3em;
+    margin-top: 2rem;
 }
 
 .direita h2 {
@@ -119,8 +118,10 @@ select {
 }
 
 label {
+    display: block;
     font-size: 14px;
     font-weight: 600;
+    margin-top: 10px;
 }
 
 label::after {
@@ -133,15 +134,59 @@ label::after {
 }
 
 .btn1 {
+    width: 70%;
+    padding: 12px 30px;
     font-weight: 700;
-    padding: 9px 130px;
     background-color: var(--castanho-escuro);
     color: var(--fundo);
     border: none;
     border-radius: 25px;
     transition: 0.4s;
+    cursor: pointer;
 }
 
 .btn1:hover {
     background-color: var(--castanho);
+}
+
+.opcoes {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 8px 0 15px;
+}
+
+.opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 400;
+    margin-top: 0;
+    cursor: pointer;
+}
+
+.opcoes label::after {
+    content: none;
+}
+
+.opcoes input[type="radio"] {
+    width: auto;
+    margin: 0;
+    margin-bottom: 15px;
+}
+
+.formulario {
+    margin-top: 40px;
+    margin-left: 120px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+
+
+.link {
+    margin-top: 1em;
+    color: var(--texto);
+    text-decoration: none;
+    margin-left: 2.5em;
 }

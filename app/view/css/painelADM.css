@@ -425,6 +425,8 @@ body {
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+
+
 .btn-guardar {
     background-color: var(--castanho);
     color: #FFFFFF;
@@ -436,3 +438,202 @@ body {
     transform: translateY(-1px);
     box-shadow: 0 7px 18px rgba(74, 59, 50, 0.18);
 }
+
+.btn-guardar:active,
+.btn-cancelar:active {
+    transform: translateY(0);
+}
+
+.acoes form {
+    margin: 0;
+}
+
+.acoes button {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-editar {
+    background-color: var(--bege);
+    color: var(--castanho);
+    border: 1px solid transparent;
+}
+
+.btn-editar:hover {
+    background-color: var(--castanho);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+}
+
+.btn-apagar {
+    background-color: var(--bege);
+    color: var(--castanho);
+    border: 1px solid transparent;
+}
+
+.btn-apagar:hover {
+    background-color: var(--perigo);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(74, 59, 50, 0.18);
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.modal-header h2 {
+    margin: 0 0 5px;
+    color: var(--texto);
+    font-size: 20px;
+}
+
+.modal-header p {
+    margin: 0;
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+.modal-fechar {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background-color: var(--bege);
+    color: var(--castanho);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.modal-fechar:hover {
+    background-color: var(--castanho);
+    color: #FFFFFF;
+}
+
+.campo-modal {
+    margin-bottom: 16px;
+}
+
+.campo-modal label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--texto);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.campo-modal input, select {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+    background-color: var(--off-white);
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.campo-modal input:disabled {
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.modal-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    background-color: var(--bege);
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.modal-aviso i {
+    color: var(--perigo);
+    margin-top: 2px;
+}
+
+.modal-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.btn-cancelarr,
+.btn-confirmar-apagar {
+    height: 38px;
+    padding: 0 15px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    text-decoration: none;
+}
+
+.btn-cancelarr {
+    border: 1px solid var(--borda);
+    background-color: var(--branco);
+    color: var(--texto);
+}
+
+.btn-cancelar:hover {
+    background-color: var(--bege);
+}
+
+.btn-confirmar-apagar {
+    border: none;
+    background-color: var(--perigo);
+    color: #FFFFFF;
+}
+
+.btn-confirmar-apagar:hover {
+    opacity: 0.9;
+}
+
+

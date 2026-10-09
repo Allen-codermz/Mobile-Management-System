@@ -53,7 +53,7 @@ body {
 }
 
 form {
-    margin-top: 5rem;
+    margin-top: 10rem;
     margin-left: 6rem;
     display: flex;
     flex-direction: column;
@@ -139,6 +139,5 @@ label::after {
 
 .link{
     margin-top: 1em;
-    text-decoration: none;
     color: var(--texto);
 }

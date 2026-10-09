@@ -184,7 +184,7 @@ if (isset($_POST['apagar'])) {
                     </a>
                 <?php endif; ?>
 
-                <a href="../pages/login.php" class="menu-item-logout">
+                <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>

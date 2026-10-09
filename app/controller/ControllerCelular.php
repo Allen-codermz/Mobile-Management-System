@@ -66,70 +66,38 @@ class ControllerCelular
         return $cores;
     }
 
-function listar()
-{
-    $celulares = array();
+    function listar()
+    {
+        $celulares = array();
 
-    $sql = "SELECT
-                ce.numeroDeSerie,
-                ce.preco,
-                ce.anoDeFabrico,
-                ma.codigoMarca,
-                ma.marca,
-                fa.codigoFabricante,
-                fa.fabricante,
-
-                co.codigoCor,
-                co.Cor,
-                co.descricao,
-
-                mo.codigoModelo,
-                mo.modelo
-
+        $sql = "SELECT ce.numeroDeSerie, ce.preco, ce.anoDeFabrico, ma.codigoMarca, ma.marca, fa.codigoFabricante, fa.fabricante, co.codigoCor, co.Cor, co.descricao , mo.codigoModelo, mo.modelo
             FROM celulares ce
-
             LEFT JOIN marca ma
-                ON ce.codigoMarca = ma.codigoMarca
-
+            ON ce.codigoMarca = ma.codigoMarca
             LEFT JOIN fabricante fa
-                ON ce.codigoFabricante = fa.codigoFabricante
-
+            ON ce.codigoFabricante = fa.codigoFabricante
             LEFT JOIN cor co
-                ON ce.codigoCor = co.codigoCor
-
+            ON ce.codigoCor = co.codigoCor
             LEFT JOIN modelo mo
-                ON ce.codigoModelo = mo.codigoModelo";
+            ON ce.codigoModelo = mo.codigoModelo";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
 
-    $result = mysqli_query($this->conexao, $sql);
+                // Criar objeto com os códigos
+                $celular = new celular($rs["numeroDeSerie"], $rs["preco"], $rs["anoDeFabrico"], $rs["codigoMarca"], $rs["codigoFabricante"], $rs["codigoCor"], $rs["codigoModelo"]);
 
-    if ($result) {
-
-        while ($rs = mysqli_fetch_assoc($result)) {
-
-            // Criar objeto com os códigos
-            $celular = new celular(
-                $rs["numeroDeSerie"],
-                $rs["preco"],
-                $rs["anoDeFabrico"],
-                $rs["codigoMarca"],
-                $rs["codigoFabricante"],
-                $rs["codigoCor"],
-                $rs["codigoModelo"]
-            );
-
-            // Guardar os nomes
-            $celular->setMarca($rs["marca"]);
-            $celular->setFabricante($rs["fabricante"]);
-            $celular->setCor($rs["Cor"]);
-            $celular->setDescricaoCor($rs["descricao"]);
-            $celular->setModelo($rs["modelo"]);
-
-            array_push($celulares, $celular);
+                // Guardar os nomes
+                $celular->setMarca($rs["marca"]);
+                $celular->setFabricante($rs["fabricante"]);
+                $celular->setCor($rs["Cor"]);
+                $celular->setDescricaoCor($rs["descricao"]);
+                $celular->setModelo($rs["modelo"]);
+                array_push($celulares, $celular);
+            }
         }
+        return $celulares;
     }
-
-    return $celulares;
-}
 
     function criar($celular)
     {

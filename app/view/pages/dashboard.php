@@ -114,6 +114,10 @@ $fabricantes = $dashboardController->celularesPorFabricante();
                     <i class="fa-solid fa-sign-out-alt"></i>
                     <p>Log Out</p>
                 </a>
+                <a href="../pages/alterarSenha.php" class="menu-item">
+                    <i class="fa-solid fa-key"></i>
+                    <p>Alterar senha</p>
+                </a>
             </nav>
         </aside>
 
@@ -122,7 +126,7 @@ $fabricantes = $dashboardController->celularesPorFabricante();
 
                 <div class="welcome">
                     <span class="welcome-label">VAMOS GERIR CELULARES DE MANEIRA EFICIENTE??</span>
-                    <h1> Olá, <span class="nome-typing"> <?= htmlspecialchars($nomeUsuario) ?></span> </h1>
+                    <h1> Olá, <span class="nome-typing"> <?= htmlspecialchars($nomeUsuario) ?>!</span> </h1>
                     <p class="subtitle"> Bem-vindo ao Sistema de Gestão de Celulares. Aqui está a visão geral do catálogo. </p>
                 </div>
                 <div class="user-profile">

@@ -199,7 +199,7 @@ body {
 
     animation:
     typing 1.5s steps(20, end) forwards,
-    cursor 0.7s step-end 6 forwards;
+    cursor 0.7s step-end 80 forwards;
 }
 
 @keyframes typing {

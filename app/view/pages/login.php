@@ -6,6 +6,10 @@ ini_set('display_errors', 1);
 session_start();
 
 if (isset($_SESSION['codigoUsuario'])) {
+    if (isset($_SESSION['primeiro_acesso']) && $_SESSION['primeiro_acesso'] == 1) {
+        header("Location: alterarSenha.php");
+        exit;
+    }
     header("Location: dashboard.php");
     exit;
 }
@@ -31,9 +35,14 @@ if (isset($_POST['login'])) {
         $_SESSION['username'] = $usuario->getUsername();
         $_SESSION['email'] = $usuario->getEmail();
         $_SESSION['codigoPerfil'] = $usuario->getCodigoPerfil();
+        $_SESSION['primeiro_acesso'] = $usuario->getPrimeiroAcesso();
         $logController = new ControllerLog($conexao);
         $log = new Logs(null, $_SESSION['codigoUsuario'], "LOGIN", "Iniciou sessão no sistema");
         $logController->criar($log);
+        if ($usuario->getPrimeiroAcesso() == 1) {
+            header("Location: alterarSenha.php");
+            exit;
+        }
         header("Location: dashboard.php");
         exit;
     } else {
@@ -62,11 +71,11 @@ if (isset($_POST['login'])) {
 
                 <div class="pw">
                     <label for="pw">Palavra-passe</label>
-                    <input type="password" name="senha" id="pw" placeholder="••••••">
+                    <input type="password" name="senha" id="pw" placeholder="Sua senha" minlength="6">
                 </div>
                 <div class="actions">
                     <button type="submit" name="login" class="btn1" form="cadastro">Entrar</button>
-                    <a class="link" href="../pages/recuperarSenha.php"> esqueceu a sua senha? clique aqui</a>
+                    <p class="link">esqueceu a sua senha? Contacte o Administrador do sistema</p>
 
                 </div>
             </form>

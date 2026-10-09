@@ -7,20 +7,32 @@ class usuario
     private $apelido;
     private $username;
     private $email;
+    private $estadoCivil;
+    private $nomePerfil;
+    private $nomeEstadoCivil;
+    private $genero;
+    private $bilhete;
     private $contacto;
     private $senha;
     private $codigoPerfil;
+    private $primeiroAcesso;
 
-    public function __construct($codigoUsuario, $nome, $apelido, $username, $email, $contacto, $senha, $codigoPerfil)
+    public function __construct($codigoUsuario, $nome, $apelido, $username, $email, $estadoCivil, $nomePerfil, $nomeEstadoCivil, $genero, $bilhete, $contacto, $senha, $codigoPerfil, $primeiroAcesso)
     {
         $this->codigoUsuario = $codigoUsuario;
         $this->nome = $nome;
         $this->apelido = $apelido;
         $this->username = $username;
         $this->email = $email;
+        $this->estadoCivil = $estadoCivil;
+        $this->nomePerfil = $nomePerfil;
+        $this->nomeEstadoCivil = $nomeEstadoCivil;
+        $this->genero = $genero;
+        $this->bilhete = $bilhete;
         $this->contacto = $contacto;
         $this->senha = $senha;
         $this->codigoPerfil = $codigoPerfil;
+        $this->primeiroAcesso = $primeiroAcesso;
     }
 
     public function getCodigoUsuario()
@@ -78,6 +90,61 @@ class usuario
         return $this;
     }
 
+    public function getEstadoCivil()
+    {
+        return $this->estadoCivil;
+    }
+
+    public function setEstadoCivil($estadoCivil)
+    {
+        $this->estadoCivil = $estadoCivil;
+        return $this;
+    }
+
+    public function getNomePerfil()
+    {
+        return $this->nomePerfil;
+    }
+
+    public function setNomePerfil($nomePerfil)
+    {
+        $this->nomePerfil = $nomePerfil;
+        return $this;
+    }
+
+    public function getNomeEstadoCivil()
+    {
+        return $this->nomeEstadoCivil;
+    }
+
+    public function setNomeEstadoCivil($nomeEstadoCivil)
+    {
+        $this->nomeEstadoCivil = $nomeEstadoCivil;
+        return $this;
+    }
+
+    public function getGenero()
+    {
+        return $this->genero;
+    }
+
+    public function setGenero($genero)
+    {
+        $this->genero = $genero;
+        return $this;
+    }
+
+    public function getBilhete()
+    {
+        return $this->bilhete;
+    }
+
+    public function setBilhete($bilhete)
+    {
+        $this->bilhete = $bilhete;
+        return $this;
+    }
+
     public function getContacto()
     {
         return $this->contacto;
@@ -108,6 +175,17 @@ class usuario
     public function setCodigoPerfil($codigoPerfil)
     {
         $this->codigoPerfil = $codigoPerfil;
+        return $this;
+    }
+
+    public function getPrimeiroAcesso()
+    {
+        return $this->primeiroAcesso;
+    }
+
+    public function setPrimeiroAcesso($primeiroAcesso)
+    {
+        $this->primeiroAcesso = $primeiroAcesso;
         return $this;
     }
 }
