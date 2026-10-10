@@ -124,4 +124,26 @@ class ControllerFabricante
         }
         return null;
     }
+
+    function pesquisar($termo)
+{
+    $fabricantes = array();
+    $t = mysqli_real_escape_string($this->conexao, $termo);
+
+    $sql = "SELECT f.codigoFabricante, f.fabricante, p.codigoPais, p.pais, c.codigoContinente, c.continente
+            FROM fabricante f
+            INNER JOIN Pais p ON f.codigoPais = p.codigoPais
+            INNER JOIN Continente c ON p.codigoContinente = c.codigoContinente
+            WHERE f.codigoFabricante LIKE '%$t%'
+                OR f.fabricante LIKE '%$t%'
+                OR p.pais LIKE '%$t%'
+                OR c.continente LIKE '%$t%'";
+    $result = mysqli_query($this->conexao, $sql);
+    if ($result) {
+        while ($rs = mysqli_fetch_assoc($result)) {
+            $fabricantes[] = new fabricante($rs["codigoFabricante"], $rs["fabricante"], $rs["codigoPais"], $rs["pais"], $rs["codigoContinente"], $rs["continente"]);
+        }
+    }
+    return $fabricantes;
+}
 }

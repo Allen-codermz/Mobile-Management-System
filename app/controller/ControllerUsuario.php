@@ -166,4 +166,32 @@ class ControllerUsuario
             WHERE codigoUsuario = '$codigoUsuario'";
         return mysqli_query($this->conexao, $sql);
     }
+
+    public function pesquisar($termo)
+    {
+        $usuarios = array();
+        $t = mysqli_real_escape_string($this->conexao, $termo);
+
+        $sql = "SELECT u.codigoUsuario, u.nome, u.apelido, u.username, u.email, u.contacto, u.senha, u.genero, u.codigoEstadoCivil, u.bilhete_de_identidade, u.codigoPerfil, u.primeiro_acesso, p.nome AS nomePerfil, ec.estado_civil AS nomeEstadoCivil
+            FROM usuario u
+            INNER JOIN perfil p ON u.codigoPerfil = p.codigoPerfil
+            INNER JOIN estado_civil ec ON u.codigoEstadoCivil = ec.codigoEstadoCivil
+            WHERE u.codigoUsuario LIKE '%$t%'
+                OR CONCAT(u.nome, ' ', u.apelido) LIKE '%$t%'
+                OR u.username LIKE '%$t%'
+                OR u.email LIKE '%$t%'
+                OR u.contacto LIKE '%$t%'
+                OR u.genero LIKE '%$t%'
+                OR u.bilhete_de_identidade LIKE '%$t%'
+                OR p.nome LIKE '%$t%'
+                OR ec.estado_civil LIKE '%$t%'
+            ORDER BY u.codigoUsuario DESC";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $usuarios[] = new usuario($rs["codigoUsuario"], $rs["nome"], $rs["apelido"], $rs["username"], $rs["email"], $rs["codigoEstadoCivil"], $rs["nomePerfil"], $rs["nomeEstadoCivil"], $rs["genero"], $rs["bilhete_de_identidade"], $rs["contacto"], $rs["senha"], $rs["codigoPerfil"], $rs["primeiro_acesso"]);
+            }
+        }
+        return $usuarios;
+    }
 }

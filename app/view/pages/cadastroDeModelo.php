@@ -1,5 +1,9 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
 require_once __DIR__ . '/../../auth/log.php';
 require_once __DIR__ . '/../../auth/auth.php';
 require_once __DIR__ . '/../../auth/permissoes.php';
@@ -34,7 +38,8 @@ switch ($codigoPerfil) {
 }
 
 $modeloController = new ControllerModelo($conexao);
-$modelos = $modeloController->listar();
+$q = trim($_GET['q'] ?? '');
+$modelos = ($q !== '') ? $modeloController->pesquisar($q) : $modeloController->listar();
 $marcas = $modeloController->listarMarcas();
 
 
@@ -58,22 +63,39 @@ if (isset($_POST['salvar'])) {
     }
 }
 
-//DELETE FOR REAL
+
+// APAGAR MODELO
 if (isset($_POST['apagar'])) {
-    $id = $_POST['id'];
-    if ($modeloController->remover($id)) {
-        registrarLog("APAGAR", "Apagou o modelo: " . $nome->getNome());
-        header("Location: cadastroDeModelo.php");
-        exit;
+    $id = (int) $_POST['id'];
+
+    // Procurar o modelo antes de o apagar
+    $modeloApagar = $modeloController->encontrarId($id);
+
+    if ($modeloApagar !== null) {
+        $nomeModelo = $modeloApagar->getNome();
+
+        if ($modeloController->remover($id)) {
+            registrarLog(
+                "APAGAR",
+                "Apagou o modelo: " . $nomeModelo
+            );
+
+            header("Location: cadastroDeModelo.php");
+            exit;
+        } else {
+            echo "O modelo não foi apagado.";
+        }
     } else {
-        echo "Modelo não foi removida";
+        echo "Modelo não encontrado.";
     }
 }
 
 //
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $modelo = $modeloController->encontrarId($id);
+$modeloEditar = null;
+
+if (isset($_GET['editar'], $_GET['id'])) {
+    $id = (int) $_GET['id'];
+    $modeloEditar = $modeloController->encontrarId($id);
 }
 
 $modeloSelecionado = null;
@@ -87,20 +109,33 @@ if (isset($_GET['apagar']) && isset($_GET['id'])) {
     }
 }
 
-$modeloEditar = null;
-if (isset($_GET['editar']) && isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $modeloEditar = $modeloController->encontrarId($id);
-}
+$modeloFormulario = null;
 
+if (isset($_GET['editar'], $_GET['id'])) {
+    $modeloFormulario = $modeloController->encontrarId(
+        (int) $_GET['id']
+    );
+}
 if (isset($_POST['guardarEdicao'])) {
-    $id = $_POST['id'];
-    $nome = $_POST['nome'];
-    $codigoModelo = $_POST['codigoModelo'];
-    $modelo = new modelo($id, $nome, $codigoModelo, null);
+    $id = (int) $_POST['id'];
+    $nome = trim($_POST['nome']);
+    $codigoMarca = (int) $_POST['codigoMarca'];
+
+    $modelo = new modelo(
+        $id,
+        $nome,
+        $codigoMarca,
+        null
+    );
+
     $resultado = $modeloController->editar($modelo);
+
     if ($resultado) {
-        registrarLog("EDITAR", "Editou o fabricante: " . $nome);
+        registrarLog(
+            "EDITAR",
+            "Editou o modelo: " . $nome
+        );
+
         header("Location: cadastroDeModelo.php");
         exit;
     }
@@ -128,51 +163,61 @@ if (isset($_POST['guardarEdicao'])) {
             <nav class="menu">
                 <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
-                    <p>Dashboard</p>
+                    <span>Dashboard</span>
                 </a>
 
                 <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
-                    <p>Celulares</p>
+                    <span>Celulares</span>
+                </a>
+
+                <a href="../pages/cadastroDeContinente.php" class="menu-item">
+                    <i class="fa-solid fa-earth-africa"></i>
+                    <span>Continentes</span>
+                </a>
+
+                <a href="../pages/cadastroDePais.php" class="menu-item">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Países</span>
                 </a>
 
                 <a href="../pages/cadastroDeFabricante.php" class="menu-item">
                     <i class="fa-solid fa-building"></i>
-                    <p>Fabricantes</p>
+                    <span>Fabricantes</span>
                 </a>
 
                 <a href="../pages/CadastroDeMarca.php" class="menu-item ">
                     <i class="fa-solid fa-tag"></i>
-                    <p>Marcas</p>
+                    <span>Marcas</span>
                 </a>
 
                 <a href="../pages/cadastroDeModelo.php" class="menu-item active">
                     <i class="fa-solid fa-box"></i>
-                    <p>Modelos</p>
+                    <span>Modelos</span>
                 </a>
 
                 <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
-                    <p>Cores</p>
+                    <span>Cores</span>
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
                     <a href="../pages/cadastroUsuario.php" class="menu-item">
                         <i class="fa-solid fa-user-gear"></i>
-                        <p>Administração</p>
+                        <span>Administração</span>
                     </a>
                 <?php endif; ?>
 
                 <?php if (podeVerLogs()): ?>
                     <a href="../pages/logsDoSistema.php" class="menu-item">
                         <i class="fa-solid fa-clock-rotate-left"></i>
-                        <p>Logs do Sistema</p>
+                        <span>Logs do Sistema</span>
                     </a>
                 <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
-                    <p>Log Out</p>
+                    <span>Log Out</span>
                 </a>
             </nav>
         </aside>
@@ -203,16 +248,17 @@ if (isset($_POST['guardarEdicao'])) {
                                 <i class="fa-solid fa-tag"></i>
                                 <select name="codigoMarca" id="codigoMarca" required>
                                     <option value="">Selecione a marca</option>
-                                    <?php foreach ($marcas as $marca) { ?>
+
+                                    <?php foreach ($marcas as $marca): ?>
                                         <option
-                                            value="<?= $marca['codigoMarca']; ?>"
-                                            <?= isset($modelo) &&
-                                                $modelo->getCodigoMarca() == $marca['codigoMarca']
+                                            value="<?= $marca['codigoMarca'] ?>"
+                                            <?= $modeloFormulario !== null &&
+                                                $modeloFormulario->getCodigoMarca() == $marca['codigoMarca']
                                                 ? 'selected'
-                                                : ''; ?>>
-                                            <?= $marca['marca']; ?>
+                                                : '' ?>>
+                                            <?= htmlspecialchars($marca['marca']) ?>
                                         </option>
-                                    <?php } ?>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
@@ -220,7 +266,15 @@ if (isset($_POST['guardarEdicao'])) {
                             <label for="modelo">Modelo</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-box"></i>
-                                <input type="text" id="modelo" name="nome" placeholder="Ex: S25 Ultra" value="<?= isset($modelo) ? $modelo->getNome() : ''; ?>" required>
+                                <input
+                                    type="text"
+                                    id="modelo"
+                                    name="nome"
+                                    placeholder="Ex: S25 Ultra"
+                                    value="<?= $modeloFormulario !== null
+                                                ? htmlspecialchars($modeloFormulario->getNome())
+                                                : '' ?>"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -239,6 +293,23 @@ if (isset($_POST['guardarEdicao'])) {
 
             <section>
                 <div class="tabela-container">
+                    <form method="get" class="pesquisa-form">
+                        <div class="pesquisa-campo">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="q" placeholder="Pesquisar..." autocomplete="off"
+                                value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                        </div>
+
+                        <button type="submit" class="btn-pesquisar">
+                            <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                        </button>
+
+                        <?php if (!empty($_GET['q'])): ?>
+                            <a href="?" class="btn-limpar-pesquisa">
+                                <i class="fa-solid fa-xmark"></i> Limpar
+                            </a>
+                        <?php endif; ?>
+                    </form>
                     <table class="tabela-fabricantes">
                         <thead>
                             <tr>
@@ -319,7 +390,7 @@ if (isset($_POST['guardarEdicao'])) {
                         <div class="modal-conteudo">
                             <div class="campo-modal">
                                 <label>ID</label>
-                                <input type="text" value="#<?= $modeloSelecionado->getCodigoMarca() ?>" disabled>
+                                <input type="text" value="#<?= $modeloSelecionado->getCodigoModelo() ?>" disabled>
                             </div>
                             <div class="campo-modal">
                                 <label>Marca</label>
@@ -337,7 +408,7 @@ if (isset($_POST['guardarEdicao'])) {
                         <div class="modal-acoes">
                             <a href="cadastroDeModelo.php" class="btn-cancelarr"> Cancelar </a>
                             <form method="post">
-                                <input type="hidden" name="id" value="<?= $modeloSelecionado->getCodigoMarca() ?>">
+                                <input type="hidden" name="id" value="<?= $modeloSelecionado->getCodigoModelo() ?>">
                                 <button type="submit" name="apagar" class="btn-confirmar-apagar"> <i class="fa-solid fa-trash"></i> Confirmar eliminação </button>
                             </form>
                         </div>
@@ -368,7 +439,7 @@ if (isset($_POST['guardarEdicao'])) {
                             </div>
                             <div class="campo-modal">
                                 <label>Marca</label>
-                                <select name="codigoModelo" required>
+                                <select name="codigoMarca" required>
                                     <?php foreach ($marcas as $marca): ?>
                                         <option
                                             value="<?= $marca['codigoMarca'] ?>"

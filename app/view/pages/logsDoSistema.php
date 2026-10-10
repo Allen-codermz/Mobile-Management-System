@@ -12,7 +12,8 @@ require_once __DIR__ . '/../../controller/ControllerLogs.php';
 
 $controllerLog = new ControllerLog($conexao);
 
-$logs = $controllerLog->listar();
+$q = trim($_GET['q'] ?? '');
+$logs = ($q !== '') ? $controllerLog->pesquisar($q) : $controllerLog->listar();
 
 $nomeUsuario = $_SESSION['nome'];
 $apelidoUsuario = $_SESSION['apelido'];
@@ -69,51 +70,62 @@ switch ($codigoPerfil) {
             <nav class="menu">
                 <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
-                    <p>Dashboard</p>
+                    <span>Dashboard</span>
                 </a>
 
                 <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
-                    <p>Celulares</p>
+                    <span>Celulares</span>
+                </a>
+
+
+                <a href="../pages/cadastroDeContinente.php" class="menu-item">
+                    <i class="fa-solid fa-earth-africa"></i>
+                    <span>Continentes</span>
+                </a>
+
+                <a href="../pages/cadastroDePais.php" class="menu-item">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Países</span>
                 </a>
 
                 <a href="../pages/cadastroDeFabricante.php" class="menu-item">
                     <i class="fa-solid fa-building"></i>
-                    <p>Fabricantes</p>
+                    <span>Fabricantes</span>
                 </a>
 
                 <a href="#" class="menu-item">
                     <i class="fa-solid fa-tag"></i>
-                    <p>Marcas</p>
+                    <span>Marcas</span>
                 </a>
 
                 <a href="../pages/cadastroDeModelo.php" class="menu-item">
                     <i class="fa-solid fa-box"></i>
-                    <p>Modelos</p>
+                    <span>Modelos</span>
                 </a>
 
                 <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
-                    <p>Cores</p>
+                    <span>Cores</span>
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
                     <a href="../pages/cadastroUsuario.php" class="menu-item">
                         <i class="fa-solid fa-user-gear"></i>
-                        <p>Administração</p>
+                        <span>Administração</span>
                     </a>
                 <?php endif; ?>
 
                 <?php if (podeVerLogs()): ?>
                     <a href="../pages/logsDoSistema.php" class="menu-item active">
                         <i class="fa-solid fa-sliders"></i>
-                        <p>Logs do Sistema</p>
+                        <span>Logs do Sistema</span>
                     </a>
                 <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
-                    <p>Log Out</p>
+                    <span>Log Out</span>
                 </a>
             </nav>
         </aside>
@@ -157,6 +169,23 @@ switch ($codigoPerfil) {
                 </div>
 
                 <div class="tabela-container">
+                    <form method="get" class="pesquisa-form">
+                        <div class="pesquisa-campo">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="q" placeholder="Pesquisar..." autocomplete="off"
+                                value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                        </div>
+
+                        <button type="submit" class="btn-pesquisar">
+                            <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                        </button>
+
+                        <?php if (!empty($_GET['q'])): ?>
+                            <a href="?" class="btn-limpar-pesquisa">
+                                <i class="fa-solid fa-xmark"></i> Limpar
+                            </a>
+                        <?php endif; ?>
+                    </form>
                     <table class="tabela-logs">
                         <thead>
                             <tr>
@@ -245,7 +274,7 @@ switch ($codigoPerfil) {
                                     <td colspan='5' class='sem-registos'>
                                         <img src='../images/file-searching-animate.svg' alt='' width=400px>
                                     </td>
-                                </tr>"
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

@@ -106,4 +106,24 @@ class ControllerMarca
         }
         return null;
     }
+
+    function pesquisar($termo)
+    {
+        $marcas = array();
+        $t = mysqli_real_escape_string($this->conexao, $termo);
+
+        $sql = "SELECT m.codigoMarca, m.marca, m.codigoFabricante, f.fabricante
+            FROM marca m
+            INNER JOIN fabricante f ON m.codigoFabricante = f.codigoFabricante
+            WHERE m.codigoMarca LIKE '%$t%'
+                OR m.marca LIKE '%$t%'
+                OR f.fabricante LIKE '%$t%'";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $marcas[] = new marca($rs["codigoMarca"], $rs["marca"], $rs["codigoFabricante"], $rs["fabricante"]);
+            }
+        }
+        return $marcas;
+    }
 }

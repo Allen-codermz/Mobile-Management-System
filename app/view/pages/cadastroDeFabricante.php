@@ -39,7 +39,28 @@ switch ($codigoPerfil) {
 
 
 $fabricanteController = new ControllerFabricante($conexao);
+
+
+
 $fabricantes = $fabricanteController->listar();
+
+$pesquisa = trim($_GET['q'] ?? '');
+
+$resultados = [];
+foreach ($fabricantes as $itemFabricante) {
+
+    if (
+        $pesquisa === '' ||
+        stripos($itemFabricante->getNome(), $pesquisa) !== false ||
+        stripos($itemFabricante->getPais(), $pesquisa) !== false ||
+        stripos($itemFabricante->getContinente(), $pesquisa) !== false
+    ) {
+        $resultados[] = $itemFabricante;
+    }
+}
+
+
+
 $paises = array();
 $continetes = $fabricanteController->listarContinentes();
 
@@ -77,6 +98,7 @@ if (isset($_POST['apagar'])) {
 }
 
 //
+
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $fabricante = $fabricanteController->encontraId($id);
@@ -146,51 +168,61 @@ if (isset($_POST['guardarEdicao'])) {
             <nav class="menu">
                 <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
-                    <p>Dashboard</p>
+                    <span>Dashboard</span>
                 </a>
 
                 <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
-                    <p>Celulares</p>
+                    <span>Celulares</span>
+                </a>
+
+                <a href="../pages/cadastroDeContinente.php" class="menu-item">
+                    <i class="fa-solid fa-earth-africa"></i>
+                    <span>Continentes</span>
+                </a>
+
+                <a href="../pages/cadastroDePais.php" class="menu-item">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Países</span>
                 </a>
 
                 <a href="#" class="menu-item active">
                     <i class="fa-solid fa-building"></i>
-                    <p>Fabricantes</p>
+                    <span>Fabricantes</span>
                 </a>
 
                 <a href="../pages/CadastroDeMarca.php" class="menu-item">
                     <i class="fa-solid fa-tag"></i>
-                    <p>Marcas</p>
+                    <span>Marcas</span>
                 </a>
 
                 <a href="../pages/cadastroDeModelo.php" class="menu-item">
                     <i class="fa-solid fa-box"></i>
-                    <p>Modelos</p>
+                    <span>Modelos</span>
                 </a>
 
                 <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
-                    <p>Cores</p>
+                    <span>Cores</span>
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
                     <a href="../pages/painelADM.php" class="menu-item">
                         <i class="fa-solid fa-user-gear"></i>
-                        <p>Administração</p>
+                        <span>Administração</span>
                     </a>
                 <?php endif; ?>
 
                 <?php if (podeVerLogs()): ?>
                     <a href="../pages/logsDoSistema.php" class="menu-item">
                         <i class="fa-solid fa-clock-rotate-left"></i>
-                        <p>Logs do Sistema</p>
+                        <span>Logs do Sistema</span>
                     </a>
                 <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
-                    <p>Log Out</p>
+                    <span>Log Out</span>
                 </a>
             </nav>
         </aside>
@@ -240,7 +272,7 @@ if (isset($_POST['guardarEdicao'])) {
                                         <option
                                             value="<?= $pais['codigoPais']; ?>"
                                             <?= isset($fabricante) &&
-                                                $fabricante->getCodigoPais() == $pais['codigoPais']
+                                                $fabricanteEditar->getCodigoPais() == $pais['codigoPais']
                                                 ? 'selected'
                                                 : ''; ?>>
                                             <?= $pais['pais']; ?>
@@ -253,7 +285,7 @@ if (isset($_POST['guardarEdicao'])) {
                             <label for="fabricante">Fabricante</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-building"></i>
-                                <input type="text" id="fabricante" name="nome" placeholder="Ex: Samsung Eletronics" value="<?= isset($fabricante) ? $fabricante->getNome() : ''; ?>" required>
+                                <input type="text" id="fabricante" name="nome" placeholder="Ex: Samsung Eletronics" value="<?= isset($fabricante) ? $fabricanteEditar->getNome() : ''; ?>" required>
                             </div>
                         </div>
                     </div>
@@ -261,8 +293,9 @@ if (isset($_POST['guardarEdicao'])) {
 
 
                     <div class="botoes">
+
                         <button type="reset" class="btn-cancelar"> <i class="fa-solid fa-eraser"></i> Limpar </button>
-                        <?php if (isset($fabricante)) { ?>
+                        <?php if ($fabricanteEditar !== null) { ?>
                             <button type="submit" name="actualizar" class="btn-guardar"> <i class="fa-solid fa-rotate"></i> Actualizar </button>
                         <?php } else { ?>
                             <button type="submit" name="salvar" class="btn-guardar"> <i class="fa-solid fa-plus"></i> Adicionar fabricante </button>
@@ -274,6 +307,23 @@ if (isset($_POST['guardarEdicao'])) {
 
             <section>
                 <div class="tabela-container">
+                    <form method="get" class="pesquisa-form">
+                        <div class="pesquisa-campo">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="q" placeholder="Pesquisar..." autocomplete="off"
+                                value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                        </div>
+
+                        <button type="submit" class="btn-pesquisar">
+                            <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                        </button>
+
+                        <?php if (!empty($_GET['q'])): ?>
+                            <a href="?" class="btn-limpar-pesquisa">
+                                <i class="fa-solid fa-xmark"></i> Limpar
+                            </a>
+                        <?php endif; ?>
+                    </form>
                     <table class="tabela-fabricantes">
                         <thead>
                             <tr>
@@ -286,8 +336,8 @@ if (isset($_POST['guardarEdicao'])) {
                         </thead>
                         <tbody>
                             <?php
-                            if (count($fabricantes) > 0) {
-                                foreach ($fabricantes as $fabricante) {
+                            if (count($resultados) > 0) {
+                                foreach ($resultados as $fabricante) {
                                     $botaoEditar = "";
                                     $botaoApagar = "";
                                     if (podeEditar()) {

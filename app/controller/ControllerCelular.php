@@ -149,4 +149,38 @@ class ControllerCelular
         }
         return null;
     }
+
+    function pesquisar($termo)
+    {
+        $celulares = array();
+        $t = mysqli_real_escape_string($this->conexao, $termo);
+
+        $sql = "SELECT ce.numeroDeSerie, ce.preco, ce.anoDeFabrico, ma.codigoMarca, ma.marca, fa.codigoFabricante, fa.fabricante, co.codigoCor, co.Cor, co.descricao, mo.codigoModelo, mo.modelo
+            FROM celulares ce
+            LEFT JOIN marca ma ON ce.codigoMarca = ma.codigoMarca
+            LEFT JOIN fabricante fa ON ce.codigoFabricante = fa.codigoFabricante
+            LEFT JOIN cor co ON ce.codigoCor = co.codigoCor
+            LEFT JOIN modelo mo ON ce.codigoModelo = mo.codigoModelo
+            WHERE ce.numeroDeSerie LIKE '%$t%'
+                OR ce.preco LIKE '%$t%'
+                OR ce.anoDeFabrico LIKE '%$t%'
+                OR ma.marca LIKE '%$t%'
+                OR fa.fabricante LIKE '%$t%'
+                OR mo.modelo LIKE '%$t%'
+                OR co.Cor LIKE '%$t%'
+                OR co.descricao LIKE '%$t%'";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $celular = new celular($rs["numeroDeSerie"], $rs["preco"], $rs["anoDeFabrico"], $rs["codigoMarca"], $rs["codigoFabricante"], $rs["codigoCor"], $rs["codigoModelo"]);
+                $celular->setMarca($rs["marca"]);
+                $celular->setFabricante($rs["fabricante"]);
+                $celular->setCor($rs["Cor"]);
+                $celular->setDescricaoCor($rs["descricao"]);
+                $celular->setModelo($rs["modelo"]);
+                array_push($celulares, $celular);
+            }
+        }
+        return $celulares;
+    }
 }

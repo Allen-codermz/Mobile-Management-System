@@ -36,4 +36,32 @@ class ControllerLog
         }
         return $logs;
     }
+
+    public function pesquisar($termo)
+    {
+        $logs = array();
+        $t = mysqli_real_escape_string($this->conexao, $termo);
+
+        $sql = "SELECT logs.codigoLog, logs.codigoUsuario, logs.acao, logs.descricao, logs.dataHora, usuario.nome, usuario.apelido, usuario.username
+            FROM logs
+            LEFT JOIN usuario ON logs.codigoUsuario = usuario.codigoUsuario
+            WHERE logs.codigoLog LIKE '%$t%'
+                OR logs.acao LIKE '%$t%'
+                OR logs.descricao LIKE '%$t%'
+                OR logs.dataHora LIKE '%$t%'
+                OR CONCAT(usuario.nome, ' ', usuario.apelido) LIKE '%$t%'
+                OR usuario.username LIKE '%$t%'
+            ORDER BY logs.dataHora DESC";
+        $resultado = mysqli_query($this->conexao, $sql);
+        if ($resultado) {
+            while ($linha = mysqli_fetch_assoc($resultado)) {
+                $log = new Logs($linha['codigoLog'], $linha['codigoUsuario'], $linha['acao'], $linha['descricao'], $linha['dataHora']);
+                $log->setNomeUsuario($linha['nome']);
+                $log->setApelidoUsuario($linha['apelido']);
+                $log->setUsernameUsuario($linha['username']);
+                $logs[] = $log;
+            }
+        }
+        return $logs;
+    }
 }

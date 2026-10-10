@@ -96,4 +96,23 @@ class ControllerCor
         }
         return null;
     }
+
+    function pesquisar($termo)
+    {
+        $cores = array();
+        $t = mysqli_real_escape_string($this->conexao, $termo);
+
+        $sql = "SELECT codigoCor, Cor, descricao
+            FROM cor
+            WHERE codigoCor LIKE '%$t%'
+                OR Cor LIKE '%$t%'
+                OR descricao LIKE '%$t%'";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $cores[] = new cor($rs["codigoCor"], $rs["Cor"], $rs["descricao"]);
+            }
+        }
+        return $cores;
+    }
 }

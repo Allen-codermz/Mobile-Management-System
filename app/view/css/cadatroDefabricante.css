@@ -313,6 +313,8 @@ body {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(74, 59, 50, 0.04);
+    margin-top: 2rem;
+
 }
 
 .tabela-fabricantes thead {
@@ -506,7 +508,8 @@ body {
     font-weight: 600;
 }
 
-.campo-modal input, select {
+.campo-modal input,
+select {
     width: 100%;
     height: 40px;
     padding: 0 12px;
@@ -583,4 +586,102 @@ body {
 
 .btn-confirmar-apagar:hover {
     opacity: 0.9;
+}
+
+.pesquisa-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+/* a tabela passa a ficar colada à barra de pesquisa */
+.pesquisa-form+.tabela-container {
+    margin-top: 1rem;
+}
+
+/* campo de texto */
+.pesquisa-campo {
+    position: relative;
+    flex: 1 1 280px;
+    max-width: 420px;
+}
+
+.pesquisa-campo>i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--castanho, #A67C62);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.pesquisa-campo input {
+    width: 100%;
+    height: 46px;
+    padding: 0 15px 0 43px;
+    border: 1px solid var(--borda, #E8DED4);
+    border-radius: 11px;
+    background-color: #FFFEFC;
+    color: var(--texto, #332A25);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.pesquisa-campo input::placeholder {
+    color: var(--texto-secundario, #88796E);
+}
+
+.pesquisa-campo input:focus {
+    border-color: var(--castanho, #A67C62);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(166, 124, 98, 0.12);
+}
+
+/* botões */
+.btn-pesquisar,
+.btn-limpar-pesquisa {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 11px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-pesquisar {
+    background-color: var(--castanho, #A67C62);
+    color: #FFFFFF;
+    box-shadow: 0 5px 14px rgba(166, 124, 98, 0.20);
+}
+
+.btn-pesquisar:hover {
+    background-color: var(--castanho-escuro, #4A3B32);
+    transform: translateY(-1px);
+    box-shadow: 0 7px 18px rgba(74, 59, 50, 0.18);
+}
+
+.btn-limpar-pesquisa {
+    background-color: var(--bege, #F0E6DD);
+    color: var(--castanho-escuro, #4A3B32);
+}
+
+.btn-limpar-pesquisa:hover {
+    background-color: var(--castanho-claro, #C9A98F);
+}
+
+.btn-pesquisar:active,
+.btn-limpar-pesquisa:active {
+    transform: translateY(0);
 }

@@ -107,4 +107,24 @@ class ControllerModelo
         }
         return null;
     }
+
+    function pesquisar($termo)
+    {
+        $modelos = array();
+        $t = mysqli_real_escape_string($this->conexao, $termo);
+
+        $sql = "SELECT mo.codigoModelo, mo.modelo, mo.codigoMarca, m.marca
+            FROM modelo mo
+            INNER JOIN marca m ON mo.codigoMarca = m.codigoMarca
+            WHERE mo.codigoModelo LIKE '%$t%'
+                OR mo.modelo LIKE '%$t%'
+                OR m.marca LIKE '%$t%'";
+        $result = mysqli_query($this->conexao, $sql);
+        if ($result) {
+            while ($rs = mysqli_fetch_assoc($result)) {
+                $modelos[] = new modelo($rs["codigoModelo"], $rs["modelo"], $rs["codigoMarca"], $rs["marca"]);
+            }
+        }
+        return $modelos;
+    }
 }

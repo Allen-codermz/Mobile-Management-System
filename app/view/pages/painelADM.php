@@ -41,8 +41,8 @@ if (
         }
     }
 }
-
-$usuarios = $controllerUsuario->listar();
+$q = trim($_GET['q'] ?? '');
+$usuarios = ($q !== '') ? $controllerUsuario->pesquisar($q) : $controllerUsuario->listar();
 
 $usuarioSelecionado = null;
 $usuarioEditar = null;
@@ -93,11 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarEdicao'])) {
     $estadoCivil = filter_input(INPUT_POST, 'estadoCivil', FILTER_VALIDATE_INT);
     $codigoPerfil = filter_input(INPUT_POST, 'codigoPerfil', FILTER_VALIDATE_INT);
 
+
     if (
         $id && $id > 0 &&
-        $nome !== '' && $apelido !== '' &&
-        $username !== '' && $email !== '' &&
-        $estadoCivil && $codigoPerfil
+        $nome !== '' &&
+        $apelido !== '' &&
+        $username !== '' &&
+        $email !== '' &&
+        $genero !== '' &&
+        $estadoCivil && $estadoCivil > 0 &&
+        $codigoPerfil && $codigoPerfil > 0
     ) {
         // Não alterar a senha através deste formulário.
         $usuarioAtual = $controllerUsuario->encontrarId($id);
@@ -182,51 +187,61 @@ switch ($codigoPerfil) {
             <nav class="menu">
                 <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
-                    <p>Dashboard</p>
+                    <span>Dashboard</span>
                 </a>
 
                 <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
-                    <p>Celulares</p>
+                    <span>Celulares</span>
+                </a>
+
+                <a href="../pages/cadastroDeContinente.php" class="menu-item">
+                    <i class="fa-solid fa-earth-africa"></i>
+                    <span>Continentes</span>
+                </a>
+
+                <a href="../pages/cadastroDePais.php" class="menu-item">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Países</span>
                 </a>
 
                 <a href="../pages/cadastroDeFabricante.php" class="menu-item">
                     <i class="fa-solid fa-building"></i>
-                    <p>Fabricantes</p>
+                    <span>Fabricantes</span>
                 </a>
 
                 <a href="../pages/CadastroDeMarca.php" class="menu-item ">
                     <i class="fa-solid fa-tag"></i>
-                    <p>Marcas</p>
+                    <span>Marcas</span>
                 </a>
 
                 <a href="../pages/cadastroDeModelo.php" class="menu-item">
                     <i class="fa-solid fa-box"></i>
-                    <p>Modelos</p>
+                    <span>Modelos</span>
                 </a>
 
                 <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
-                    <p>Cores</p>
+                    <span>Cores</span>
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
                     <a href="../pages/cadastroUsuario.php" class="menu-item active">
                         <i class="fa-solid fa-user-gear"></i>
-                        <p>Administração</p>
+                        <span>Administração</span>
                     </a>
                 <?php endif; ?>
 
                 <?php if (podeVerLogs()): ?>
                     <a href="../pages/logsDoSistema.php" class="menu-item">
                         <i class="fa-solid fa-clock-rotate-left"></i>
-                        <p>Logs do Sistema</p>
+                        <span>Logs do Sistema</span>
                     </a>
                 <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
-                    <p>Log Out</p>
+                    <span>Log Out</span>
                 </a>
             </nav>
         </aside>
@@ -267,6 +282,23 @@ switch ($codigoPerfil) {
                 </div>
 
                 <div class="tabela-container">
+                    <form method="get" class="pesquisa-form">
+                        <div class="pesquisa-campo">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="q" placeholder="Pesquisar..." autocomplete="off"
+                                value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                        </div>
+
+                        <button type="submit" class="btn-pesquisar">
+                            <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                        </button>
+
+                        <?php if (!empty($_GET['q'])): ?>
+                            <a href="?" class="btn-limpar-pesquisa">
+                                <i class="fa-solid fa-xmark"></i> Limpar
+                            </a>
+                        <?php endif; ?>
+                    </form>
                     <table class="tabela-logs">
                         <thead>
                             <tr>
@@ -446,6 +478,60 @@ switch ($codigoPerfil) {
                             <div class="campo-modal">
                                 <label>Email</label>
                                 <input type="email" name="email" value="<?= htmlspecialchars($usuarioEditar->getEmail(), ENT_QUOTES, 'UTF-8') ?>" required>
+                            </div>
+
+                            <div class="campo-modal">
+                                <label for="genero">Género</label>
+
+                                <select name="genero" id="genero" required>
+                                    <option value="Masculino"
+                                        <?= $usuarioEditar->getGenero() === 'Masculino' ? 'selected' : '' ?>>
+                                        Masculino
+                                    </option>
+
+                                    <option value="Feminino"
+                                        <?= $usuarioEditar->getGenero() === 'Feminino' ? 'selected' : '' ?>>
+                                        Feminino
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="campo-modal">
+                                <label for="estadoCivil">Estado civil</label>
+
+                                <select name="estadoCivil" id="estadoCivil" required>
+                                    <?php foreach ($controllerUsuario->listarEstadoCivil() as $estado): ?>
+                                        <option
+                                            value="<?= (int) $estado['codigoEstadoCivil'] ?>"
+                                            <?= (int) $estado['codigoEstadoCivil'] === (int) $usuarioEditar->getEstadoCivil()
+                                                ? 'selected'
+                                                : '' ?>>
+                                            <?= htmlspecialchars($estado['estado_civil'], ENT_QUOTES, 'UTF-8') ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="campo-modal">
+                                <label for="codigoPerfil">Perfil do utilizador</label>
+
+                                <select name="codigoPerfil" id="codigoPerfil" required>
+                                    <?php foreach ($controllerUsuario->listarPerfis() as $perfil): ?>
+                                        <option
+                                            value="<?= (int) $perfil['codigoPerfil'] ?>"
+                                            <?= (int) $perfil['codigoPerfil'] === (int) $usuarioEditar->getCodigoPerfil()
+                                                ? 'selected'
+                                                : '' ?>>
+
+                                            <?= htmlspecialchars(
+                                                $perfil['nome'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
 
                             <div class="campo-modal">

@@ -126,7 +126,6 @@ if (isset($_POST['criar'])) {
 
                 <div class="actions">
                     <button name="criar" type="submit" class="btn1"> Criar conta </button>
-
                     <a class="link" href="../pages/dashboard.php"> Voltar ao dashboard </a>
                 </div>
             </form>

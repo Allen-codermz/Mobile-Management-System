@@ -1,5 +1,7 @@
 <?php
 
+
+
 require_once __DIR__ . '/../../auth/log.php';
 require_once __DIR__ . '/../../auth/auth.php';
 require_once __DIR__ . '/../../auth/permissoes.php';
@@ -35,7 +37,8 @@ switch ($codigoPerfil) {
 }
 
 $marcaController = new ControllerMarca($conexao);
-$marcas = $marcaController->listar();
+$q = trim($_GET['q'] ?? '');
+$marcas = ($q !== '') ? $marcaController->pesquisar($q) : $marcaController->listar();
 $fabricantes = $marcaController->listarFabricantes();
 
 
@@ -59,7 +62,36 @@ if (isset($_POST['salvar'])) {
     }
 }
 
-//DELETE FOR REAL
+
+if (isset($_POST['apagar'])) {
+    if (!podeApagar()) {
+        http_response_code(403);
+        exit('Não tens permissão para apagar marcas.');
+    }
+
+    $id = (int) ($_POST['id'] ?? 0);
+
+    $marcaApagar = $marcaController->encontrarId($id);
+
+    if ($marcaApagar !== null) {
+        $nomeMarca = $marcaApagar->getNome();
+
+        if ($marcaController->remover($id)) {
+            registrarLog(
+                "APAGAR",
+                "Apagou a marca: " . $nomeMarca
+            );
+
+            header("Location: CadastroDeMarca.php");
+            exit;
+        } else {
+            echo "A marca não foi removida.";
+        }
+    } else {
+        echo "Marca não encontrada.";
+    }
+}
+
 if (isset($_POST['apagar'])) {
     $id = $_POST['id'];
     if ($marcaController->remover($id)) {
@@ -72,29 +104,39 @@ if (isset($_POST['apagar'])) {
 }
 
 
+
 $marcaSelecionada = null;
-if (isset($_GET['apagar']) && isset($_GET['id'])) {
-    $id = $_GET['id'];
-    foreach ($marcas as $marca) {
-        if ($marca->getCodigoMarca() == $id) {
-            $marcaSelecionada = $marca;
-            break;
-        }
-    }
+
+if (isset($_GET['apagar'], $_GET['id'])) {
+    $id = (int) $_GET['id'];
+    $marcaSelecionada = $marcaController->encontrarId($id);
 }
+
 
 $marcaEditar = null;
 if (isset($_GET['editar']) && isset($_GET['id'])) {
     $id = $_GET['id'];
     $marcaEditar = $marcaController->encontrarId($id);
 }
-
 if (isset($_POST['guardarEdicao'])) {
-    $id = $_POST['id'];
-    $nome = $_POST['nome'];
-    $codigoFabricante = $_POST['codigoFabricante'];
-    $marca = new marca($id, $nome, $codigoFabricante, null);
+    if (!podeEditar()) {
+        http_response_code(403);
+        exit('Não tens permissão para editar marcas.');
+    }
+
+    $id = (int) $_POST['id'];
+    $nome = trim($_POST['nome']);
+    $codigoFabricante = (int) $_POST['codigoFabricante'];
+
+    $marca = new marca(
+        $id,
+        $nome,
+        $codigoFabricante,
+        null
+    );
+
     $resultado = $marcaController->editar($marca);
+
     if ($resultado) {
         registrarLog("EDITAR", "Editou a marca: " . $nome);
         header("Location: CadastroDeMarca.php");
@@ -124,51 +166,61 @@ if (isset($_POST['guardarEdicao'])) {
             <nav class="menu">
                 <a href="../pages/dashboard.php" class="menu-item">
                     <i class="fa-solid fa-house"></i>
-                    <p>Dashboard</p>
+                    <span>Dashboard</span>
                 </a>
 
                 <a href="../pages/cadastroDeCelular.php" class="menu-item">
                     <i class="fa-solid fa-mobile-screen"></i>
-                    <p>Celulares</p>
+                    <span>Celulares</span>
+                </a>
+
+                <a href="../pages/cadastroDeContinente.php" class="menu-item">
+                    <i class="fa-solid fa-earth-africa"></i>
+                    <span>Continentes</span>
+                </a>
+
+                <a href="../pages/cadastroDePais.php" class="menu-item ">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Países</span>
                 </a>
 
                 <a href="../pages/cadastroDeFabricante.php" class="menu-item">
                     <i class="fa-solid fa-building"></i>
-                    <p>Fabricantes</p>
+                    <span>Fabricantes</span>
                 </a>
 
                 <a href="#" class="menu-item active">
                     <i class="fa-solid fa-tag"></i>
-                    <p>Marcas</p>
+                    <span>Marcas</span>
                 </a>
 
                 <a href="../pages/cadastroDeModelo.php" class="menu-item">
                     <i class="fa-solid fa-box"></i>
-                    <p>Modelos</p>
+                    <span>Modelos</span>
                 </a>
 
                 <a href="../pages/cadastroDaCor.php" class="menu-item">
                     <i class="fa-solid fa-palette"></i>
-                    <p>Cores</p>
+                    <span>Cores</span>
                 </a>
 
                 <?php if (podeGerirUsuarios()): ?>
                     <a href="../pages/painelADM.php" class="menu-item">
                         <i class="fa-solid fa-user-gear"></i>
-                        <p>Administração</p>
+                        <span>Administração</span>
                     </a>
                 <?php endif; ?>
 
                 <?php if (podeVerLogs()): ?>
                     <a href="../pages/logsDoSistema.php" class="menu-item">
                         <i class="fa-solid fa-clock-rotate-left"></i>
-                        <p>Logs do Sistema</p>
+                        <span>Logs do Sistema</span>
                     </a>
                 <?php endif; ?>
 
                 <a href="logout.php" class="menu-item-logout">
                     <i class="fa-solid fa-sign-out-alt"></i>
-                    <p>Log Out</p>
+                    <span>Log Out</span>
                 </a>
             </nav>
         </aside>
@@ -198,10 +250,11 @@ if (isset($_POST['guardarEdicao'])) {
                                 <i class="fa-solid fa-building"></i>
                                 <select name="codigoFabricante" id="codigoFabricante" required>
                                     <option value="">Selecione o fabricante</option>
-                                    <?php foreach ($fabricantes as $fabricante) { ?>
-                                        <option value="<?= $fabricante['codigoFabricante']; ?>">
-                                            <?= htmlspecialchars($fabricante['fabricante']); ?>
-                                        <?php } ?>
+                                    <?php foreach ($fabricantes as $fabricante): ?>
+                                        <option value="<?= $fabricante['codigoFabricante'] ?>">
+                                            <?= htmlspecialchars($fabricante['fabricante']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
@@ -224,6 +277,23 @@ if (isset($_POST['guardarEdicao'])) {
 
             <section>
                 <div class="tabela-container">
+                    <form method="get" class="pesquisa-form">
+                        <div class="pesquisa-campo">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="q" placeholder="Pesquisar..." autocomplete="off"
+                                value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                        </div>
+
+                        <button type="submit" class="btn-pesquisar">
+                            <i class="fa-solid fa-magnifying-glass"></i> Pesquisar
+                        </button>
+
+                        <?php if (!empty($_GET['q'])): ?>
+                            <a href="?" class="btn-limpar-pesquisa">
+                                <i class="fa-solid fa-xmark"></i> Limpar
+                            </a>
+                        <?php endif; ?>
+                    </form>
                     <table class="tabela-fabricantes">
                         <thead>
                             <tr>
@@ -242,14 +312,14 @@ if (isset($_POST['guardarEdicao'])) {
                                     if (podeEditar()) {
                                         $botaoEditar = "
                                     <form method='get'>
-                                    <input type='hidden' name='id' value='{$marca->getcodigoMarca()}'>
+                                    <input type='hidden' name='id' value='{$marca->getCodigoMarca()}'>
                                     <button type='submit' name='editar' class='btn-editar'> <i class='fa-solid fa-pen'></i> Editar </button>
                                     </form>";
                                     }
                                     if (podeApagar()) {
                                         $botaoApagar = "
                                     <form method='get'>
-                                    <input type='hidden' name='id' value='{$marca->getcodigoMarca()}'>
+                                    <input type='hidden' name='id' value='{$marca->getCodigoMarca()}'>
                                     <button type='submit' name='apagar' class='btn-apagar'> <i class='fa-solid fa-trash'></i> Apagar </button>
                                     </form>";
                                     }
